@@ -206,7 +206,7 @@ IfMsgBox Yes
 	FileMove,%A_ScriptDir%/DTraderTools.*,%A_ScriptDir%/DTraderTools-backup,1
 	FileMove,%A_ScriptDir%/DTraderTools-backup,%A_MyDocuments%/DTraderTools_backups/,1
 	MsgBox,,Current Version Backup,Current version should now be backed up.`n`nTo restore from backup add ".ahk" at the end of the filename.,5
-	UrlDownloadToFile,https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk,%A_ScriptDir%/DTraderTools.ahk
+	UrlDownloadToFile,https://pastebin.com/raw/4d8UeaeP,%A_ScriptDir%/DTraderTools.ahk
 	MsgBox,,Update Checker,Shane's Trader Tools should be updated to version %NV%! When the new box pops up check the ? button to be sure.,5
 	Run %A_ScriptDir%\DTraderTools.ahk
 	ExitApp
