@@ -1,6 +1,6 @@
 ﻿;Last updated 4-05-2022
 #SingleInstance, Force
-CV = 1.2
+CV = 1.1
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Images which are embedded using the functions at the end of this script;
