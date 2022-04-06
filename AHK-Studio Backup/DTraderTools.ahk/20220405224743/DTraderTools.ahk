@@ -1,6 +1,6 @@
-﻿#SingleInstance, Force
-CV = 1.6
-LE = Last updated 4/05/2022
+﻿;Last updated 4-05-2022
+#SingleInstance, Force
+CV = 1.5
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Images which are embedded using the functions at the end of this script;
@@ -127,9 +127,9 @@ GuiControlGet, ticker
 ;site = https://www.webull.com/
 ;Run %site%
 IfExist, C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe
-Run "C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe"
+	Run "C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe"
 IfExist, C:\Program Files (x86)\Webull Desktop.exe
-Run, "C:\Program Files (x86)\Webull Desktop.exe"
+	Run, "C:\Program Files (x86)\Webull Desktop.exe"
 return 
 
 CB:
@@ -294,14 +294,8 @@ site = https://www.yardeni.com/pub/stmkt200dma.pdf
 Run %site%
 return
 
-ButtonBloomberg:
-GuiControlGet, ticker
-site = https://bloomberg.com
-Run %site%
-return
-
 Button?:
-MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on 4/04/2022 as a collection of tools that may be helpful for stock and option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`n`nCurrent Version: %CV%`n`n%LE% `n`n`n          © 2022 Kassandra, LLC                   https://kassandra.llc
+MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on 4/04/2022 as a collection of tools that may be helpful for stock and option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`n`nCurrent Version: %CV% `n`n`n          © 2022 Kassandra, LLC                   https://kassandra.llc
 return
 
 ButtonGo:

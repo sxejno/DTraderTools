@@ -1,6 +1,7 @@
-﻿#SingleInstance, Force
+﻿;Last updated 4-05-2022
+#SingleInstance, Force
 CV = 1.6
-LE = Last updated 4/05/2022
+LE = "Last updated 4/05/2022"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Images which are embedded using the functions at the end of this script;
