@@ -1,6 +1,6 @@
 ﻿;Last updated 4-05-2022
 #SingleInstance, Force
-CV = 1.5
+CV = 1.4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Images which are embedded using the functions at the end of this script;
@@ -126,10 +126,7 @@ GuiControl, +Redraw, Picture
 GuiControlGet, ticker
 ;site = https://www.webull.com/
 ;Run %site%
-IfExist, C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe
-	Run "C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe"
-IfExist, C:\Program Files (x86)\Webull Desktop.exe
-	Run, "C:\Program Files (x86)\Webull Desktop.exe"
+Run "C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe"
 return 
 
 CB:
