@@ -126,7 +126,7 @@ GuiControl, +Redraw, Picture
 GuiControlGet, ticker
 ;site = https://www.webull.com/
 ;Run %site%
-Run C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe
+Run "C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe"
 return 
 
 CB:
