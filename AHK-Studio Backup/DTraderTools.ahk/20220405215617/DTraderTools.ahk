@@ -1,6 +1,6 @@
 ﻿;Last updated 4-05-2022
 #SingleInstance, Force
-CV = 1.3
+CV = 1.2
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Images which are embedded using the functions at the end of this script;
@@ -48,7 +48,7 @@ URLDownloadToVar(url) {
 
 accounts = 
 (
-Charles Schwab|Gemini|Edward Jones|Chase|Robin Hood
+Charles Schwab|Edward Jones|Chase|Robin Hood|Fundrise
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -124,9 +124,8 @@ GuiControl, -Redraw, Picture
 GuiControl,, Picture, %imgWB%
 GuiControl, +Redraw, Picture
 GuiControlGet, ticker
-;site = https://www.webull.com/
-;Run %site%
-Run "C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe"
+site = https://www.webull.com/
+Run %site%
 return 
 
 CB:
@@ -204,13 +203,13 @@ IfMsgBox No
 	return
 IfMsgBox Yes
 	MsgBox,,Current Version Backup,Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools-backup,3
-FileMove,%A_ScriptDir%/DTraderTools.*,%A_ScriptDir%/DTraderTools-backup,1
-FileMove,%A_ScriptDir%/DTraderTools-backup,%A_MyDocuments%/DTraderTools_backups/,1
-MsgBox,,Current Version Backup,Current version should now be backed up.`n`nTo restore from backup add ".ahk" at the end of the filename.,5
-UrlDownloadToFile,https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk,%A_ScriptDir%/DTraderTools.ahk
-MsgBox,,Update Checker,Shane's Trader Tools should be updated to version %NV%! When the new box pops up check the ? button to be sure.,5
-Run %A_ScriptDir%\DTraderTools.ahk
-ExitApp
+	FileMove,%A_ScriptDir%/DTraderTools.*,%A_ScriptDir%/DTraderTools-backup,1
+	FileMove,%A_ScriptDir%/DTraderTools-backup,%A_MyDocuments%/DTraderTools_backups/,1
+	MsgBox,,Current Version Backup,Current version should now be backed up.`n`nTo restore from backup add ".ahk" at the end of the filename.,5
+	UrlDownloadToFile,https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk,%A_ScriptDir%/DTraderTools.ahk
+	MsgBox,,Update Checker,Shane's Trader Tools should be updated to version %NV%! When the new box pops up check the ? button to be sure.,5
+	Run %A_ScriptDir%\DTraderTools.ahk
+	ExitApp
 If NV == %CV%
 	MsgBox,,Update Checker,Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
 return
@@ -305,8 +304,8 @@ If Acct = Chase
 	Run "https://chase.com"
 If Acct = Robin Hood
 	Run "https://robinhood.com/us/en/"
-If Acct = Gemini
-	Run "https://gemini.com"
+If Acct = Fundrise
+	Run "https://fundrise.com"
 return
 
 GuiClose:
