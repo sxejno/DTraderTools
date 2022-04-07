@@ -1,12 +1,12 @@
 ﻿#SingleInstance, Force
-CV = 1.71
+CV = 1.7
 LE = Last updated 4/07/2022
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Images which are embedded using the functions at the end of this script;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-imgfavicon:= "HBITMAP:*" . Create_favicon_ico() ;*[DTraderTools]
+imgfavicon:= "HBITMAP:*" . Create_favicon_ico()
 Menu, Tray, Icon, % "HBITMAP:*" . Create_favicon_ico()
 
 imgMaria:= "HBITMAP:*" . Create_maria_png()
