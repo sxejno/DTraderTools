@@ -1,6 +1,6 @@
 ﻿#SingleInstance, Force
-CV = 1.7
-LE = Last updated 4/07/2022
+CV = 1.6
+LE = Last updated 4/05/2022
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Images which are embedded using the functions at the end of this script;
@@ -126,13 +126,10 @@ GuiControl, +Redraw, Picture
 GuiControlGet, ticker
 ;site = https://www.webull.com/
 ;Run %site%
-IfExist, C:\Program Files (x86)\Webull Desktop.exe
-	Run, C:\Program Files (x86)\Webull Desktop.exe
 IfExist, C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe
-	Run C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe
-IfNotExist, C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe
-	site = https://www.webull.com/
-	Run %site%
+Run C:\Program Files (x86)\Webull Desktop\Webull Desktop.exe
+IfExist, C:\Program Files (x86)\Webull Desktop.exe
+Run, C:\Program Files (x86)\Webull Desktop.exe
 return 
 
 CB:
@@ -210,13 +207,13 @@ IfMsgBox No
 	return
 IfMsgBox Yes
 	MsgBox,,Current Version Backup,Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools-backup`n`n(Your Documents folder),7
-FileMove,%A_ScriptDir%/DTraderTools.*,%A_ScriptDir%/DTraderTools-backup,1
-FileMove,%A_ScriptDir%/DTraderTools-backup,%A_MyDocuments%/DTraderTools_backups/,1
-MsgBox,,Current Version Backup,Current version should now be backed up.`n`nTo restore from backup add ".ahk" at the end of the filename.,7
-UrlDownloadToFile,https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk,%A_ScriptDir%/DTraderTools.ahk
-MsgBox,,Update Checker,Shane's Trader Tools should be updated to version %NV%! When the new box pops up check the ? button to be sure.,7
-Run %A_ScriptDir%\DTraderTools.ahk
-ExitApp
+	FileMove,%A_ScriptDir%/DTraderTools.*,%A_ScriptDir%/DTraderTools-backup,1
+	FileMove,%A_ScriptDir%/DTraderTools-backup,%A_MyDocuments%/DTraderTools_backups/,1
+	MsgBox,,Current Version Backup,Current version should now be backed up.`n`nTo restore from backup add ".ahk" at the end of the filename.,7
+	UrlDownloadToFile,https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk,%A_ScriptDir%/DTraderTools.ahk
+	MsgBox,,Update Checker,Shane's Trader Tools should be updated to version %NV%! When the new box pops up check the ? button to be sure.,7
+	Run %A_ScriptDir%\DTraderTools.ahk
+	ExitApp
 If NV == %CV%
 	MsgBox,,Update Checker,Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
 return
