@@ -1,4 +1,10 @@
-﻿#SingleInstance, Force
+﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+; #Warn  ; Enable warnings to assist with detecting common errors.
+SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
+SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+
+
+#SingleInstance, Force
 CV = 2.0
 LE = Last updated 4/07/2022
 
@@ -13,9 +19,14 @@ last_changes =
 	*created "DTraderTools" folder in 'My Documents'
 	folder to store config.ini and future backup
 	
+	*changed backup so that it stays .ahk file &
+	removed the message telling you to add ".ahk"
+	
 	*fixed webull using mouseclick to click 
 	shortcut... if webull desktop is not installed,
 	webull website is loaded in browser instead
+	
+	*removed SwaggyStocks and commented out unused code
 	
 	*bloomberg was added in a previous update,
 	not sure if you noticed
