@@ -1,30 +1,13 @@
 ﻿#SingleInstance, Force
-CV = 2.0
+CV = 1.71
 LE = Last updated 4/07/2022
 
-last_changes = added config file for future updates, and to`nbe able to show changes after updates like this one1`n`nfixed webull using mouseclick`n`nbloomberg added in a previous update
+changed = 1
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;         INI CHECKER/CREATOR - VERSION CHECKER - SHOW LAST CHANGES     ;
-;  this checks for config.ini file (creates one if doesn't exist) and   ; 
-;  compares the version number and if different, shows last changes     ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-If !FileExist(A_MyDocuments "\DTraderTools\config.ini"){
-	FileCreateDir, %A_MyDocuments%\DTraderTools\
-	IniWrite, 0, %A_MyDocuments%\DTraderTools\config.ini, info, version
-}
-
-IniRead, OutputVar, %A_MyDocuments%\DTraderTools\config.ini, info, version
-If OutputVar != %CV%
-	MsgBox,,New in version %CV%, %last_changes%
-IniWrite, %CV%, %A_MyDocuments%\DTraderTools\config.ini, info, version
-IniWrite, %last_changes%, %A_MyDocuments%\DTraderTools\config.ini, info, changes
-
-
-
+If (%changed% > 0){
+	MsgBox test
+	}
+return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Images which are embedded using the functions at the end of this script;
@@ -233,14 +216,14 @@ If NV != %CV%
 IfMsgBox No
 	return
 IfMsgBox Yes
-	MsgBox,,Current Version Backup,Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\DTraderTools-backup`n`n("DTraderTools" folder in Your Documents folder),7
-	FileMove,%A_ScriptDir%/DTraderTools.*,%A_ScriptDir%/DTraderTools-backup,1
-	FileMove,%A_ScriptDir%/DTraderTools-backup,%A_MyDocuments%/DTraderTools/DTraderTools_backups/,1
-	MsgBox,,Current Version Backup,Current version should now be backed up.`n`nTo restore from backup add ".ahk" at the end of the filename.,7
-	UrlDownloadToFile,https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk,%A_ScriptDir%/DTraderTools.ahk
-	MsgBox,,Update Checker,Shane's Trader Tools should be updated to version %NV%! When the new box pops up check the version to be sure.,7
-	Run %A_ScriptDir%\DTraderTools.ahk
-	ExitApp
+	MsgBox,,Current Version Backup,Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools-backup`n`n(Your Documents folder),7
+FileMove,%A_ScriptDir%/DTraderTools.*,%A_ScriptDir%/DTraderTools-backup,1
+FileMove,%A_ScriptDir%/DTraderTools-backup,%A_MyDocuments%/DTraderTools_backups/,1
+MsgBox,,Current Version Backup,Current version should now be backed up.`n`nTo restore from backup add ".ahk" at the end of the filename.,7
+UrlDownloadToFile,https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk,%A_ScriptDir%/DTraderTools.ahk
+MsgBox,,Update Checker,Shane's Trader Tools should be updated to version %NV%! When the new box pops up check the ? button to be sure.,7
+Run %A_ScriptDir%\DTraderTools.ahk
+ExitApp
 If NV == %CV%
 	MsgBox,,Update Checker,Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
 return

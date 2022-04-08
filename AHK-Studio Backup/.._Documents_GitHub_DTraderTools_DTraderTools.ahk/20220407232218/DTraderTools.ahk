@@ -1,16 +1,8 @@
 ﻿#SingleInstance, Force
-CV = 2.0
+CV = 1.71
 LE = Last updated 4/07/2022
 
-last_changes = added config file for future updates, and to`nbe able to show changes after updates like this one1`n`nfixed webull using mouseclick`n`nbloomberg added in a previous update
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;         INI CHECKER/CREATOR - VERSION CHECKER - SHOW LAST CHANGES     ;
-;  this checks for config.ini file (creates one if doesn't exist) and   ; 
-;  compares the version number and if different, shows last changes     ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+last_changes = added thing 1`nadded thing 2`nthing3
 
 If !FileExist(A_MyDocuments "\DTraderTools\config.ini"){
 	FileCreateDir, %A_MyDocuments%\DTraderTools\
@@ -23,7 +15,7 @@ If OutputVar != %CV%
 IniWrite, %CV%, %A_MyDocuments%\DTraderTools\config.ini, info, version
 IniWrite, %last_changes%, %A_MyDocuments%\DTraderTools\config.ini, info, changes
 
-
+MsgBox do stuff
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
