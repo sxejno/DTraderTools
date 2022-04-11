@@ -26,8 +26,6 @@ last_changes =
 	shortcut... if webull desktop is not installed,
 	webull website is loaded in browser instead
 	
-	*added background
-	
 	*removed Robin Hood & SwaggyStocks and commented out`n	unused code
 	
 	*bloomberg was added in a previous update, not sure if you`n	noticed
