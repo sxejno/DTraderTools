@@ -5,8 +5,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
 #SingleInstance, Force
-CV = 2.2
-LE = Last updated 7/27/2022
+CV = 2.1
+LE = Last updated 6/17/2022
 
 last_changes =
 	(
@@ -15,8 +15,6 @@ last_changes =
 	*removed webull and added thinkorswim
 	
 	*added FedWatch to watch for FOMC meetings
-	
-	*added OPEC Watch to watch for OPEC meetings
 	
 	*added Kraken & cryptowatch
 	

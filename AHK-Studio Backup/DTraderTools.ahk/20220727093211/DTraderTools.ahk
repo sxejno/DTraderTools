@@ -5,8 +5,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
 #SingleInstance, Force
-CV = 2.2
-LE = Last updated 7/27/2022
+CV = 2.1
+LE = Last updated 6/17/2022
 
 last_changes =
 	(
@@ -15,8 +15,6 @@ last_changes =
 	*removed webull and added thinkorswim
 	
 	*added FedWatch to watch for FOMC meetings
-	
-	*added OPEC Watch to watch for OPEC meetings
 	
 	*added Kraken & cryptowatch
 	
@@ -146,7 +144,7 @@ Gui, Add, Picture, gSTT x22 y419 w230 h40 , %imgSTT%
 Gui, Add, Button, x422 y429 w20 h20 , ?
 Gui, Add, Button, x372 y389 w70 h20 , 200DMA
 Gui, Add, Button, x372 y369 w70 h20 , StockRow
-Gui, Add, Button, x302 y369 w70 h20 , OPEC Watch
+Gui, Add, Button, x302 y369 w70 h20 , Bloomberg
 Gui, Add, Button, x302 y389 w70 h20 , FedWatch
 ;Gui, Add, CheckBox, x372 y429 w60 h20 , enhance
 
@@ -404,17 +402,11 @@ site = https://www.cmegroup.com/trading/interest-rates/countdown-to-fomc.html
 Run %site%
 return
 
-ButtonOPECWatch:
+ButtonBloomberg:
 GuiControlGet, ticker
-site = https://www.cmegroup.com/trading/energy/cme-opec-watch-tool.html
+site = https://bloomberg.com
 Run %site%
 return
-
-;ButtonBloomberg:
-;GuiControlGet, ticker
-;site = https://bloomberg.com
-;Run %site%
-;return
 
 Button?:
 MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on 4/04/2022 as a collection of tools that may be helpful for stock and option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022 Kassandra, LLC                   https://kassandra.llc
