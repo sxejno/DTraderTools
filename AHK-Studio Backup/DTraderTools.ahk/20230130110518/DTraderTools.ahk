@@ -5,14 +5,12 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
 #SingleInstance, Force
-CV = 2.3
-LE = Last updated 1/30/2023
+CV = 2.2
+LE = Last updated 7/27/2022
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
-	
-	*fixed link for FBN stream
 	
 	*removed webull and added thinkorswim
 	
