@@ -171,7 +171,7 @@ GuiControl, -Redraw, PicFox
 GuiControl,, PicFox, %imgFBN%
 GuiControl, +Redraw, PicFox
 GuiControlGet, ticker
-site = https://ustv247.tv/foxbusinesslive/
+site = https://www.newslive.com/business/fox-business-network-fbn.html
 Run %site%
 return 
 
