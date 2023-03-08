@@ -12,37 +12,36 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	*added better error handling to how the code finds the thinkorswim exe
+	* improved how thinkorswim.exe is found
 	
-	*removed broken link to "Ultimate List of Market Resources"
+	* removed broken link to "Ultimate List of Market Resources"
 	
-	*added Bloomberg Live TV
+	* added Bloomberg Live TV
 	
-	Previous changes in version 2.3:
+	PREVIOUS CHANGES IN VERSION 2.3:
 	
-	*fixed link for FBN stream
+	* fixed link for FBN stream
 	
-	*removed webull and added thinkorswim
+	* removed webull and added thinkorswim
 	
-	*added FedWatch to watch for FOMC meetings
+	* added FedWatch to watch for FOMC meetings
 	
-	*added OPEC Watch to watch for OPEC meetings
+	* added OPEC Watch to watch for OPEC meetings
 	
-	*added Kraken & cryptowatch
+	* added Kraken & cryptowatch
 	
-	Previous changes in version 2.0:
+	PREVIOUS CHANGES IN VERSION 2.0:
 	
-	*added config file for future updates,
+	* added config file for future updates,
 	and to be able to show changes after 
 	updates like this one
 	
-	*created "DTraderTools" folder in 'My Documents'
+	* created "DTraderTools" folder in 'My Documents'
 	folder to store config.ini and future backup
 	
-	*changed backup so that it stays .ahk file &
+	* changed backup so that it stays .ahk file &
 	removed the message telling you to add ".ahk"
 	)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;         INI CHECKER/CREATOR - VERSION CHECKER - SHOW LAST CHANGES     ;
@@ -318,9 +317,8 @@ else IfMsgBox Timeout
 	return
 else IfMsgBox Yes
 	NV:= URLDownloadToVar("https://pastebin.com/raw/QL0NgcCM")
-	;msgbox % NV
 If NV != %CV%
-	MsgBox,4,Update Checker,Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
+	MsgBox,4,New version %NV% released!,Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
 IfMsgBox No
 	return
 IfMsgBox Yes
@@ -328,7 +326,6 @@ IfMsgBox Yes
 FileMove,%A_ScriptDir%/DTraderTools.ahk,%A_ScriptDir%/DTraderTools-backup.ahk,1
 Sleep 100
 FileMove,%A_ScriptDir%/DTraderTools-backup.ahk,%A_MyDocuments%/DTraderTools/DTraderTools_backup.ahk,1
-	;MsgBox,,Current Version Backup,Current version should now be backed up.`n`nTo restore from backup add ".ahk" at the end of the filename.,7
 UrlDownloadToFile,https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk,%A_ScriptDir%/DTraderTools.ahk
 MsgBox,,Update Checker,Shane's Trader Tools should be updated to version %NV%!,7
 Run %A_ScriptDir%\DTraderTools.ahk
@@ -432,7 +429,7 @@ return
 ;return
 
 Button?:
-MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on 4/04/2022 as a collection of tools that may be helpful for stock and option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022 Kassandra, LLC                   https://kassandra.llc
+MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on 4/04/2022 as a collection of tools that may be helpful for stock and option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
 return
 
 ButtonGo:
