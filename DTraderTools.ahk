@@ -5,12 +5,20 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
 #SingleInstance, Force
-CV = 2.3
-LE = Last updated 1/30/2023
+CV = 2.31
+LE = Last updated 3/07/2023
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
+	
+	*added better error handling to how the code finds the thinkorswim exe
+	
+	*removed broken link to "Ultimate List of Market Resources"
+	
+	*added Bloomberg Live TV
+	
+	Previous changes in version 2.3:
 	
 	*fixed link for FBN stream
 	
@@ -129,7 +137,7 @@ Gui, Add, GroupBox, x22 y359 w430 h60 , Accounts:
 Gui, Add, Text, x32 y379 w120 h20 , View Account:
 Gui, Add, Button, x252 y379 w40 h20 , Go
 Gui, Add, Button, x392 y149 w50 h40 default, OPEN ALL
-Gui, Add, Button, x372 y229 w70 h60 , Ultimate List of Market Resources
+Gui, Add, Button, x372 y229 w70 h60 , Bloomberg Live TV
 Gui, Add, DropDownList, x112 y379 w130 h200 vAcct Choose1, %accounts%
 Gui, Add, Picture, gFBN x42 y239 w100 h100 vPicFox, %imgFBN%
 Gui, Add, Picture, gToS x32 y169 w50 h40 vPicture, %imgTOS%
@@ -226,15 +234,20 @@ else If WinExist("Main@thinkorswim")
 		Click
 		}
 	}
-else
-	{
-	IfExist, C:\Program Files\thinkorswim\thinkorswim.exe
-	Try
+else IfExist, C:\Program Files\thinkorswim\thinkorswim.exe
 		{
 		Run "C:\Program Files\thinkorswim\thinkorswim.exe"
 		WinWait,Logon to thinkorswim
 		}
-}
+else
+	{
+	IfExist, C:\Users\Shane\AppData\Local\thinkorswim\thinkorswim.exe
+	Try
+		{
+		Run "C:\Users\Shane\AppData\Local\thinkorswim\thinkorswim.exe"
+		WinWait,Logon to thinkorswim
+		}
+	}
 return
 
 CB:
@@ -388,9 +401,9 @@ site = https://stockrow.com/
 Run %site%
 return
 
-ButtonUltimateListofMarketResources:
+ButtonBloombergLiveTV:
 GuiControlGet, ticker
-site = https://github.com/ckz8780/market-toolkit
+site = https://www.bloomberg.com/live/us/btv
 Run %site%
 return
 
