@@ -1,10 +1,58 @@
 ﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#SingleInstance, Force
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
+; Set your GitHub repository and file path here
+;GitHubUser := "sxejno"
+;GitHubRepo := "DTraderTools"
+;FilePathInRepo := "/DTraderTools.ahk"
 
-#SingleInstance, Force
+; The version number of your local script. Update this when you update your script.
+;LocalVersion := CV
+ConfigFilePath := A_MyDocuments . "\DTraderTools\config.ini"
+IniRead, LocalVersion, %ConfigFilePath%, info, version
+
+; Check for updates
+;UpdateCheckURL := "https://raw.githubusercontent.com/" . GitHubUser . "/" . GitHubRepo . "/main/" . FilePathInRepo
+UpdateCheckURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk"
+Try {
+	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+	whr.Open("GET", UpdateCheckURL, true)
+	whr.Send()
+	whr.WaitForResponse()
+	StatusCode := whr.Status
+	RemoteScript := whr.ResponseText
+} Catch {
+    ; Failed to check for updates, continue running the script.
+	Goto StartScript
+}
+
+; If the request was successful, extract the version number from the new script
+if (StatusCode = 200) {
+	NewVersion := RegExReplace(RemoteScript, "s)^.*?;\s*Version:\s*([\d.]+).*$", "$1")
+	
+    ; If the new version is greater than the local version, prompt the user to update
+	if (NewVersion > LocalVersion) {
+		MsgBox, 4, Update Available, A new version of the script is available. Do you want to update?
+		IfMsgBox Yes
+		{
+            ; Backup the current script file and replace with the new script
+			FileCopy, %A_ScriptFullPath%, %A_ScriptFullPath%.bak, 1
+			FileDelete, %A_ScriptFullPath%
+			FileAppend, %RemoteScript%, %A_ScriptFullPath%
+			MsgBox, , Update Complete, The script has been updated and will now restart.
+			IniWrite, %NewVersion%, %ConfigFilePath%, info, version
+			Run, %A_ScriptFullPath%
+			ExitApp
+		}
+	}
+}
+
+StartScript:
+; Your script starts here
+
 CV = 2.32
 LE = Last updated 3/09/2023
 
@@ -445,7 +493,7 @@ return
 ;return
 
 Button?:
-MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on 4/04/2022 as a collection of tools that may be helpful for stock and option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
+MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on 4/04/2022 as a collection of tools that may be helpful for stock and option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          � 2022-2023 Kassandra, LLC                   https://kassandra.llc
 return
 
 ButtonGo:
@@ -1574,5 +1622,14 @@ return
 Specify_Area:
 run FindText_get_coordinates.ahk
 return
+
+; Function to decode base64 content
+Base64Decode(str) {
+    VarSetCapacity(binary, len := Ceil((StrLen(str) / 4) * 3))
+    DllCall("Crypt32.dll\CryptStringToBinary", "Str", str, "UInt", 0, "UInt", 1, "Ptr", &binary, "UInt*", len, "Ptr", 0, "Ptr", 0)
+    VarSetCapacity(str, len * 2, 0)
+    DllCall("MultiByteToWideChar", "UInt", 0, "UInt", 0, "Ptr", &binary, "Int", len, "Ptr", &str, "Int", len)
+    Return str
+}
 
 
