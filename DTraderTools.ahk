@@ -30,7 +30,6 @@ Try {
 
 ; If the request was successful, extract the version number from the new script
 if (StatusCode = 200) {
-	RemoteScript := RegExReplace(RemoteScript, "s)(LocalVersion :=).*", "$1 " . NewVersion)
 	NewVersion := RegExReplace(RemoteScript, "s)^.*?;\s*Version:\s*([\d.]+).*$", "$1")
 	
     ; If the new version is greater than the local version, prompt the user to update
@@ -41,7 +40,8 @@ if (StatusCode = 200) {
             ; Backup the current script file and replace with the new script
 			FileCopy, %A_ScriptFullPath%, %A_ScriptFullPath%.bak, 1
 			FileDelete, %A_ScriptFullPath%
-			SaveScriptWithCorrectEncoding(RemoteScript, A_ScriptFullPath)			
+			IniWrite, %NewVersion%, %ConfigFilePath%, info, version
+			SaveScriptWithCorrectEncoding(RemoteScript, A_ScriptFullPath)		
 			MsgBox, , Update Complete, The script has been updated and will now restart.
 			IniWrite, %NewVersion%, %ConfigFilePath%, info, version
 			Run, %A_ScriptFullPath%
