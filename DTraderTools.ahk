@@ -1,4 +1,4 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+﻿?#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #SingleInstance, Force
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
@@ -493,7 +493,7 @@ return
 ;return
 
 Button?:
-MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on 4/04/2022 as a collection of tools that may be helpful for stock and option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          � 2022-2023 Kassandra, LLC                   https://kassandra.llc
+MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on 4/04/2022 as a collection of tools that may be helpful for stock and option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          ? 2022-2023 Kassandra, LLC                   https://kassandra.llc
 return
 
 ButtonGo:
@@ -1634,23 +1634,26 @@ Base64Decode(str) {
 
 SaveScriptWithCorrectEncoding(Content, FilePath) {
     ; Detect encoding
-    DetectUTF8(Content, IsUTF8, HasBOM)
-
+	DetectUTF8(Content, IsUTF8, HasBOM)
+	
     ; Save the script with the detected encoding
-    oFile := FileOpen(FilePath, "w" . (IsUTF8 ? " cp65001" : ""))
-    if !IsObject(oFile) {
-        MsgBox, , Error, Failed to save the updated script.
-        return
-    }
-
+	oFile := FileOpen(FilePath, "w" . (IsUTF8 ? " cp65001" : ""))
+	if !IsObject(oFile) {
+		MsgBox, , Error, Failed to save the updated script.
+		return
+	}
+	
     ; Write content without BOM
-    if (HasBOM)
-        oFile.RawWrite(&Content + 3, StrLen(Content) - 1)
-    else
-        oFile.Write(Content)
-
-    oFile.Close()
+	if (HasBOM) {
+		StartPos := 4
+		Content := StrGet(&Content + 3, StrLen(Content) - 3, (IsUTF8 ? "cp65001" : "cp0"))
+	} else {
+		StartPos := 1
+	}
+	oFile.Write(Content)
+	oFile.Close()
 }
+
 
 DetectUTF8(ByRef Content, ByRef IsUTF8, ByRef HasBOM) {
     ; Check if the content starts with a UTF-8 BOM
