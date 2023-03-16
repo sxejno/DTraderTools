@@ -12,7 +12,13 @@ FilePathInRepo := "DTraderTools.ahk"
 ; The version number of your local script. Update this when you update your script.
 ;LocalVersion := CV
 ConfigFilePath := A_MyDocuments . "\DTraderTools\config.ini"
-IniRead, LocalVersion, %ConfigFilePath%, info, version
+if (0 < A_Args.Length()) {
+	LocalVersion := A_Args[1]
+	IniWrite, %LocalVersion%, %ConfigFilePath%, info, version
+} else {
+	IniRead, LocalVersion, %ConfigFilePath%, info, version
+}
+
 
 ; Check for updates
 UpdateCheckURL := "https://raw.githubusercontent.com/" . GitHubUser . "/" . GitHubRepo . "/testing/" . FilePathInRepo
@@ -44,7 +50,8 @@ if (StatusCode = 200) {
 			SaveScriptWithCorrectEncoding(RemoteScript, A_ScriptFullPath)		
 			MsgBox, , Update Complete, The script has been updated and will now restart.
 			IniWrite, %NewVersion%, %ConfigFilePath%, info, version
-			Run, %A_ScriptFullPath%
+			Run, %A_ScriptFullPath%	
+			Run, %A_ScriptFullPath% %NewVersion%
 			ExitApp
 		}
 	}
