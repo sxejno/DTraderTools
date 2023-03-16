@@ -1,4 +1,4 @@
-﻿?#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #SingleInstance, Force
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
@@ -16,7 +16,6 @@ IniRead, LocalVersion, %ConfigFilePath%, info, version
 
 ; Check for updates
 UpdateCheckURL := "https://raw.githubusercontent.com/" . GitHubUser . "/" . GitHubRepo . "/testing/" . FilePathInRepo
-;UpdateCheckURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/testing/DTraderTools.ahk"
 Try {
 	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 	whr.Open("GET", UpdateCheckURL, true)
@@ -31,6 +30,7 @@ Try {
 
 ; If the request was successful, extract the version number from the new script
 if (StatusCode = 200) {
+	RemoteScript := RegExReplace(RemoteScript, "s)(LocalVersion :=).*", "$1 " . NewVersion)
 	NewVersion := RegExReplace(RemoteScript, "s)^.*?;\s*Version:\s*([\d.]+).*$", "$1")
 	
     ; If the new version is greater than the local version, prompt the user to update
