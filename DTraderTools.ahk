@@ -5,9 +5,9 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ; Set your GitHub repository and file path here
-;GitHubUser := "sxejno"
-;GitHubRepo := "DTraderTools"
-;FilePathInRepo := "/DTraderTools.ahk"
+GitHubUser := "sxejno"
+GitHubRepo := "DTraderTools"
+FilePathInRepo := "DTraderTools.ahk"
 
 ; The version number of your local script. Update this when you update your script.
 ;LocalVersion := CV
@@ -15,8 +15,8 @@ ConfigFilePath := A_MyDocuments . "\DTraderTools\config.ini"
 IniRead, LocalVersion, %ConfigFilePath%, info, version
 
 ; Check for updates
-;UpdateCheckURL := "https://raw.githubusercontent.com/" . GitHubUser . "/" . GitHubRepo . "/main/" . FilePathInRepo
-UpdateCheckURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk"
+UpdateCheckURL := "https://raw.githubusercontent.com/" . GitHubUser . "/" . GitHubRepo . "/testing/" . FilePathInRepo
+;UpdateCheckURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/testing/DTraderTools.ahk"
 Try {
 	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 	whr.Open("GET", UpdateCheckURL, true)
@@ -41,7 +41,7 @@ if (StatusCode = 200) {
             ; Backup the current script file and replace with the new script
 			FileCopy, %A_ScriptFullPath%, %A_ScriptFullPath%.bak, 1
 			FileDelete, %A_ScriptFullPath%
-			FileAppend, %RemoteScript%, %A_ScriptFullPath%
+			SaveScriptWithCorrectEncoding(RemoteScript, A_ScriptFullPath)			
 			MsgBox, , Update Complete, The script has been updated and will now restart.
 			IniWrite, %NewVersion%, %ConfigFilePath%, info, version
 			Run, %A_ScriptFullPath%
@@ -1632,4 +1632,43 @@ Base64Decode(str) {
     Return str
 }
 
+SaveScriptWithCorrectEncoding(Content, FilePath) {
+    ; Detect encoding
+    DetectUTF8(Content, IsUTF8, HasBOM)
 
+    ; Save the script with the detected encoding
+    oFile := FileOpen(FilePath, "w" . (IsUTF8 ? " cp65001" : ""))
+    if !IsObject(oFile) {
+        MsgBox, , Error, Failed to save the updated script.
+        return
+    }
+
+    ; Write content without BOM
+    if (HasBOM)
+        oFile.RawWrite(&Content + 3, StrLen(Content) - 1)
+    else
+        oFile.Write(Content)
+
+    oFile.Close()
+}
+
+DetectUTF8(ByRef Content, ByRef IsUTF8, ByRef HasBOM) {
+    ; Check if the content starts with a UTF-8 BOM
+    if (SubStr(Content, 1, 3) = Chr(0xEF) . Chr(0xBB) . Chr(0xBF)) {
+        HasBOM := true
+        IsUTF8 := true
+    } else {
+        HasBOM := false
+
+        ; Simple heuristic to detect if the content is likely to be UTF-8
+        IsUTF8 := true
+        Loop, Parse, Content
+        {
+            c := Asc(A_LoopField)
+            if (c >= 0x80) {
+                IsUTF8 := false
+                break
+            }
+        }
+    }
+}
