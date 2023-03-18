@@ -255,12 +255,12 @@ else If WinExist("Main@thinkorswim")
 		Click
 	}
 }
-else IfExist, C:\Program Files\thinkorswim\thinkorswim.exe
+else IfExist, C:\Users\18592\AppData\Local\thinkorswim\thinkorswim.exe
 {
-	Run "C:\Program Files\thinkorswim\thinkorswim.exe"
+	Run "C:\Users\18592\AppData\Local\thinkorswim\thinkorswim.exe"
 	WinWait,Logon to thinkorswim
 }
-else
+else 
 {
 	IfExist, C:\Users\Shane\AppData\Local\thinkorswim\thinkorswim.exe
 	Try
