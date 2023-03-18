@@ -41,6 +41,8 @@ The script includes buttons to access the following websites and tools:
 * CME Group OPEC Watch Tool (ButtonOPECWatch)
 
 ### Help and Support
+There is an option to "request a feature" and to "report a bug", if you click on "Shane's Trader Tools" on the bottom of the program.
+
 For information about the script, click the "Help" button in the GUI. The help message box displays details about the script, its version, and the author's contact information.
 
 ### Disclaimer
