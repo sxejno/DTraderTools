@@ -4,13 +4,20 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-
-CV = 2.4
+CV = 2.5
 LE = Last updated 3/17/2023
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
+	
+	* script now automatically checks for updates 
+	
+	* added "feature request" ability
+	
+	* added "report a bug" ability
+	
+	* backups are now labelled with their version
 	
 	* removed embedded images
 	
@@ -19,6 +26,48 @@ last_changes =
 	* rearranged some icons
 
 	)
+
+
+; Add this line at the beginning of your script, right after the initial comments and before any other code
+CheckForUpdate:
+
+;GitHubVersionURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/DTraderTools-version.txt"
+GitHubVersionURL := "https://pastebin.com/raw/QL0NgcCM"
+GitHubScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk"
+
+; Use a Try statement to handle any errors while checking for an update
+Try {
+    NV := URLDownloadToVar(GitHubVersionURL)
+} Catch {
+    ; If there's an error checking for an update, proceed with the script
+    Goto, StartScript
+}
+
+; Check if there is a new version available
+If (NV != CV) {
+    MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane``s Trader Tools to the newest version now?
+    If (A_MsgBoxResult == 7) ; "No" button
+        Goto, StartScript
+    If (A_MsgBoxResult == 6) ; "Yes" button
+    {
+        ; Add update process here
+		MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\DTraderTools-backup_v%CV%.ahk, 7
+        FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
+        Sleep, 100
+        FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/DTraderTools_backup_v%CV%.ahk, 1
+        UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
+        MsgBox,, Update Checker, Shane``s Trader Tools should be updated to version %NV%!, 7
+        Run, %A_ScriptDir%\DTraderTools.ahk
+        ExitApp
+    }
+} Else {
+    Goto, StartScript
+}
+
+; Add a label here to start your script normally when there is no update or the user declines the update
+StartScript:
+
+; Your script should continue here
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;         INI CHECKER/CREATOR - VERSION CHECKER - SHOW LAST CHANGES     ;
@@ -92,11 +141,13 @@ imghelp:= A_MyDocuments . "\DTraderTools\resources\images\help.png"
 ;     Helper to get version number to determine if update is needed     ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+; Function to download the script version as a variable
 URLDownloadToVar(url) {
-	WebRequest := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-	WebRequest.Open("GET", url)
-	WebRequest.Send()
-	Return, WebRequest.ResponseText
+	h := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+	h.Open("GET", url, true)
+	h.Send()
+	h.WaitForResponse()
+	return h.ResponseText
 }
 
 
@@ -281,28 +332,49 @@ Run %site%
 return
 
 STT:
-MsgBox,4,Update Shane``s Trader Tools,Check for update now?, 5
+MsgBox, 4, Update Shane's Trader Tools, Check for update now?, 5
+
 IfMsgBox No
-	return
+{
+    MsgBox, 4, Feature Request & Bug Reporting, Want to REQUEST A FEATURE or REPORT A BUG?
+    IfMsgBox Yes
+        Run, https://forms.gle/Apubmtc1cmbhpSu59
+    else IfMsgBox No
+        return
+}
 else IfMsgBox Timeout
-	return
+{
+    return
+}
 else IfMsgBox Yes
-	NV:= URLDownloadToVar("https://pastebin.com/raw/QL0NgcCM")
-If NV != %CV%
-	MsgBox,4,New version %NV% released!,Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane``s Trader Tools to the newest version now?
-IfMsgBox No
-	return
-IfMsgBox Yes
-	MsgBox,,Current Version Backup,Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\DTraderTools-backup.ahk,7
-FileMove,%A_ScriptDir%/DTraderTools.ahk,%A_ScriptDir%/DTraderTools-backup.ahk,1
-Sleep 100
-FileMove,%A_ScriptDir%/DTraderTools-backup.ahk,%A_MyDocuments%/DTraderTools/DTraderTools_backup.ahk,1
-UrlDownloadToFile,https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk,%A_ScriptDir%/DTraderTools.ahk
-MsgBox,,Update Checker,Shane``s Trader Tools should be updated to version %NV%!,7
-Run %A_ScriptDir%\DTraderTools.ahk
-ExitApp
-If NV == %CV%
-	MsgBox,,Update Checker,Your current version is %CV% and the newest version is %NV%.`n`nShane``s Trader Tools is up to date!
+{
+    GitHubVersionURL := "https://pastebin.com/raw/QL0NgcCM"
+    GitHubScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk"
+    NV := URLDownloadToVar(GitHubVersionURL)
+    
+    if NV != %CV%
+    {
+        MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
+        
+        IfMsgBox No
+            return
+        IfMsgBox Yes
+        {
+            MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\DTraderTools-backup_v%CV%.ahk, 7
+            FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
+            Sleep, 100
+            FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/DTraderTools_backup_v%CV%.ahk, 1
+            UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
+            MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
+            Run, %A_ScriptDir%\DTraderTools.ahk
+            ExitApp
+        }
+    }
+    else if NV == %CV%
+    {
+        MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
+    }
+}
 return
 
 
@@ -396,6 +468,7 @@ return
 
 help:
 MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on 4/04/2022 as a collection of tools that may be helpful for stock and option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
+;Run, %  A_MyDocuments . "\DTraderTools\resources\google_form.html"
 return
 
 ButtonGo:
