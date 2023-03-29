@@ -220,9 +220,9 @@ try {
 ; Check if there is a new version available
 	If (NV != CV) {
 		MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
-		If (A_MsgBoxResult == 7) ; "No" button
+		IfMsgBox, No ; "No" button
 			Goto, StartScript
-		If (A_MsgBoxResult == 6) ; "Yes" button
+		IfMsgBox, Yes ; "Yes" button
 		{
         ; Add update process here
 			MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\DTraderTools-backup_v%CV%.ahk, 7
