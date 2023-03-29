@@ -1,4 +1,4 @@
-﻿;#Requires AutoHotkey v1.1 ; lets new AHK install know which version it is
+﻿#Requires AutoHotkey >=v1.1 ; lets new AHK install know which version it is
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #SingleInstance, Force
 ; #Warn  ; Enable warnings to assist with detecting common errors.
