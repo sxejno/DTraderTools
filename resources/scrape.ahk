@@ -1,3 +1,5 @@
+/*
+
 #Requires AutoHotkey >=v1.1 ; lets new AHK install know which version it is
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #SingleInstance, Force
@@ -8,7 +10,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
-
+*/
 
 PCR_url := "https://ycharts.com/indicators/cboe_equity_put_call_ratio"
 
@@ -75,3 +77,4 @@ FileAppend, %VIXnum%`n%PCRnum%`n%newsp500RelValue%, %ResourcesFolder%temp.txt
 ; Notify the user that the download is complete
 ;MsgBox, Download complete.
 
+ExitApp
