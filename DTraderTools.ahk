@@ -1,4 +1,4 @@
-﻿#Requires AutoHotkey >=v1.1 ; lets new AHK install know which version it is
+﻿;#Requires AutoHotkey >=v1.1 ; lets new AHK install know which version it is
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #SingleInstance, Force
 ; #Warn  ; Enable warnings to assist with detecting common errors.
@@ -9,8 +9,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.62
-LE = Last updated 3/28/2023
+CV = 2.63
+LE = Last updated 3/29/2023
 
 last_changes =
 	(
@@ -21,14 +21,10 @@ last_changes =
 	* continues code refactor for
 	  speed boost
 	(GUI should now load much faster)
-	 
-	* fixed problem with "#Requires..."
-	by changing "#Requires AutoHotkey v1.1"
-	to "#Requires AutoHotkey >=v1.1"
-	 
-	* added calculator
+		 
+	* added calculator shortcut
 	
-	* added extra button code
+	* added Google Calendar
 	
 	* added Obsidian launcher
 	
@@ -90,6 +86,8 @@ imgBTV:= A_MyDocuments . "\DTraderTools\resources\images\bbtv.png"
 imgChatGPT:= A_MyDocuments . "\DTraderTools\resources\images\gpt.png"
 imgSTT:= A_MyDocuments . "\DTraderTools\resources\images\sttlong.png"
 imgOB:= A_MyDocuments . "\DTraderTools\resources\images\ob.png"
+imgcal:= A_MyDocuments . "\DTraderTools\resources\images\cal.png"
+imgcalc:= A_MyDocuments . "\DTraderTools\resources\images\calc.png"
 imghelp:= A_MyDocuments . "\DTraderTools\resources\images\help.png"
 
 
@@ -148,10 +146,12 @@ try {
 	
 	; Add buttons above the help button
 	
-	Gui, Add, Button, x22 y429 w70 h30, UNUSED
-	Gui, Add, Picture,gOB x122 y419 w31 h49 BackgroundTrans, %imgOB%
+	;Gui, Add, Button,gCalendar x22 y429 w70 h30, Calendar
+	Gui, Add, Picture,gCalendar x22 y429 w64 h64 BackgroundTrans, %imgcal%
+	Gui, Add, Picture,gOB x122 y432 w31 h49 BackgroundTrans, %imgOB%
 	;Gui, Add, Button, x102 y459 w70 h30, Button6
-	Gui, Add, Button,gCalc x182 y429 w70 h30, Calculator
+	Gui, Add, Picture,gCalc x182 y429 w64 h64 BackgroundTrans, %imgcalc%
+	;Gui, Add, Button,gCalc x182 y429 w70 h30, Calculator
 	;Gui, Add, Button, x262 y419 w70 h30, Button4
 	;Gui, Add, Button, x342 y419 w70 h30, Button5
 	
@@ -182,7 +182,7 @@ try {
 		;MsgBox, % "test" . VIXnum . PCRnum . SP	
 	}
 	
-
+	
 	
 	; Generated using SmartGUI Creator 4.0
 	Gui, Show, x878 y358 h531 w479, Shane's Trader Tools v%CV%
@@ -190,7 +190,7 @@ try {
 } catch {
 	Gui, Hide
 	ImageFolder := A_MyDocuments . "\DTraderTools\resources\images"
-	ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"}]	
+	ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"}]	
 	CheckAndDownloadImages(ImageList, imageFolder)
 	Gui, Show
 }
@@ -252,7 +252,7 @@ StartScript:
 ; Check and download missing images
 ResourcesFolder := A_MyDocuments . "\DTraderTools\resources"
 ImageFolder := A_MyDocuments . "\DTraderTools\resources\images"
-ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"}]	
+ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"}]	
 
 
 CheckAndDownloadImages(ImageList, imageFolder)
@@ -267,7 +267,7 @@ scrapeScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/r
 
 If !FileExist(scrapeScriptPath)
 	UrlDownloadToFile, % scrapeScriptURL, % scrapeScriptPath
-	Run % scrapeScriptPath
+Run % scrapeScriptPath
 
 
 ; Download the DownloadImage.ahk script if it doesn't exist in the resources folder
@@ -438,69 +438,6 @@ Loop, % ImageList.MaxIndex() {
 		Menu, Tray, Icon, % imgfavicon
 		Gui, Show, x878 y358 h531 w479, Shane's Trader Tools v%CV%
 		
-		/*
-			
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;                                                                         ;
-;         Put/Call Ratio, VIX scraper, SP500 200DMA stuff                 ; 
-;                                                                         ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-			
-; Get Put/Call Ratio
-			PCR_url := "https://ycharts.com/indicators/cboe_equity_put_call_ratio"
-			
-			httpObj := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-			httpObj.Open("GET", PCR_url)
-			httpObj.Send()
-			response := httpObj.ResponseText
-			
-; Find the text using a more specific RegEx
-			pattern := "(\d+\.\d+)\s+for\s+(\w+\s+\d+\s+\d+)"
-			RegExMatch(response, pattern, result)
-			
-; Save the text to a variable
-			PutCallRatio := Trim(result)
-			
-; Get VIX
-			VIX_url := "https://ycharts.com/indicators/vix_volatility_index"
-			
-			httpObj.Open("GET", VIX_url)
-			httpObj.Send()
-			VIX_response := httpObj.ResponseText
-			
-; Find the text using a more specific RegEx
-			pattern := "(\d+\.\d+)\s+for\s+(\w+\s+\d+\s+\d+)"
-			RegExMatch(VIX_response, pattern, VIX_result)
-			
-; Save the text to a variable
-			VIX := Trim(VIX_result)
-			
-			RegExMatch(PutCallRatio, "(\d+\.\d+)", PCRnum)
-			RegExMatch(VIX, "(\d+\.\d+)", VIXnum)
-			
-; Get SP500 200DMA
-			200DMA_url := "https://docs.google.com/spreadsheets/d/1Wz02gvjyN-al5gULvqXyXGIrrgl1S6cMYL9cJEHGrVc/export?format=csv"
-			
-			httpObj := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-			httpObj.Open("GET", 200DMA_url, false)
-			httpObj.Send()
-			200DMAresponse := httpObj.ResponseText
-			
-; Parse the first two values from the A column in the CSV data (A1 and A2)
-			Loop, Parse, csvData, `n, `r
-			{
-				StringSplit, rowData, A_LoopField, `,
-				if (A_Index = 1)
-					value200DMA := rowData1
-				else if (A_Index = 2)
-				{
-					valueSP500 := rowData1
-					break
-				}
-			}
-			
-			
-		*/
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;     Helper to get version number to determine if update is needed     ;
@@ -631,9 +568,14 @@ Loop, % ImageList.MaxIndex() {
 		Run %site%
 		return
 		
+		Calendar:
+		Run https://calendar.google.com
+		return
+		
 		Calc:
 		Run calc.exe
 		return
+		
 		
 		OB:
 		SetTitleMatchMode, 2
@@ -846,58 +788,7 @@ Loop, % ImageList.MaxIndex() {
 			FileReadLine, SP, %temppath%, 3
 		;MsgBox, % "test" . VIXnum . PCRnum . SP	
 		}
-		
-		/*
-    ; Fetch the Put/Call Ratio data from the URL and store it in a variable
-			PCR_url := "https://ycharts.com/indicators/cboe_equity_put_call_ratio"
-			urlDownloadToFile, %PCR_url%, %ResourcesFolder%/myPCRData.txt
-			FileRead, myPCRData, %ResourcesFolder%/myPCRData.txt
-			
-    ; Extract the desired value from the fetched Put/Call Ratio data
-			pattern := "(\d+\.\d+)\s+for\s+(\w+\s+\d+\s+\d+)"
-			RegExMatch(myPCRData, pattern, result)
-			
-    ; Save the text to a variable
-			newPutCallRatio := Trim(result)
-			
-    ; Fetch the VIX data from the URL and store it in a variable
-			VIX_url := "https://ycharts.com/indicators/vix_volatility_index"
-			urlDownloadToFile, %VIX_url%, %ResourcesFolder%/myVIXData.txt
-			FileRead, myVIXData, %ResourcesFolder%/myVIXData.txt
-			
-    ; Extract the desired value from the fetched VIX data
-			pattern := "(\d+\.\d+)\s+for\s+(\w+\s+\d+\s+\d+)"
-			RegExMatch(myVIXData, pattern, VIX_result)
-			
-    ; Save the text to a variable
-			newVIX := Trim(VIX_result)
-			
-			
-	; Get SP500 200DMA
-			200DMA_url := "https://docs.google.com/spreadsheets/d/1Wz02gvjyN-al5gULvqXyXGIrrgl1S6cMYL9cJEHGrVc/export?format=csv"
-			
-			httpObj := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-			httpObj.Open("GET", 200DMA_url, false)
-			httpObj.Send()
-			csvData := httpObj.ResponseText
-			
-; Parse the first two values from the A column in the CSV data (A1 and A2)
-			Loop, Parse, csvData, `n, `r
-			{
-				StringSplit, rowData, A_LoopField, `,
-				if (A_Index = 1)
-					value200DMA := rowData1
-				else if (A_Index = 2)
-				{
-					valueSP500 := rowData1
-					break
-				}
-			}
-			
-			newsp500RelValue := ((valueSP500 - value200DMA) / valueSP500) * 100
-			newsp500RelValue := Round(newsp500RelValue) . "%"
-			
-		*/			
+				
 		
 	; Get the gradient images for the values
 		vixImage := GetVIXGradientImage(VIXnum)
