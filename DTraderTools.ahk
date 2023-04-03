@@ -9,27 +9,14 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.63
-LE = Last updated 3/29/2023
+CV = 2.64
+LE = Last updated 4/03/2023
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
 	   
-	    Spring 2023 Edition!
-	
-	* continues code refactor for
-	  speed boost
-	(GUI should now load much faster)
-		 
-	* added calculator shortcut
-	
-	* added Google Calendar
-	
-	* added Obsidian launcher
-	
-	* added scraper to pull data
-	from web without slowing down
+	* fixed bug with gradient colors   
 
 	)
 
@@ -320,36 +307,37 @@ Loop, % ImageList.MaxIndex() {
 	WatchImagesFolder() {
 		WatchFolder(A_MyDocuments . "\DTraderTools\resources\images", "CheckImagesDownloaded")
 	}
-	
-	
+
+
+
+
 ; Function to get VIX gradient image based on input VIX value
-	GetVIXGradientImage(value) {
-		ImageFolder := A_MyDocuments . "\DTraderTools\resources\images\"
-		vixThresholds := [13, 19, 40]
-		
-		if (value <= vixThresholds[1]) {
+GetVIXGradientImage(value) {
+    ImageFolder := A_MyDocuments . "\DTraderTools\resources\images\"
+    vixThresholds := [13, 19, 28]
+
+    if (value <= vixThresholds[2]) {
         ; Calculate the appropriate image between 100 (green) and 60 (yellow) based on the VIX value
-			relativeValue := (value - vixThresholds[1]) / (vixThresholds[1] - vixThresholds[0])
-			imageIndex := 100 - (40 * relativeValue)
-			return ImageFolder . Round(imageIndex / 10) * 10 . ".png" ; Round to the nearest multiple of 10
-		}
-		else if (value > vixThresholds[1] && value <= vixThresholds[2]) {
+        relativeValue := (value - vixThresholds[1]) / (vixThresholds[2] - vixThresholds[1])
+        imageIndex := 100 - (40 * relativeValue)
+        return ImageFolder . Round(imageIndex / 10) * 10 . ".png" ; Round to the nearest multiple of 10
+    }
+    else if (value > vixThresholds[2] && value <= vixThresholds[3]) {
         ; Calculate the appropriate image between 60 (yellow) and 10 (red) based on the VIX value
-			relativeValue := (value - vixThresholds[1]) / (vixThresholds[2] - vixThresholds[1])
-			imageIndex := 60 - (50 * relativeValue)
-			return ImageFolder . Round(imageIndex / 10) * 10 . ".png" ; Round to the nearest multiple of 10
-		}
-		else {
-        ; Calculate the appropriate image between 50 (red) and 10 (most red) based on the VIX value
+        relativeValue := (value - vixThresholds[2]) / (vixThresholds[3] - vixThresholds[2])
+        imageIndex := 60 - (50 * relativeValue)
+        return ImageFolder . Round(imageIndex / 10) * 10 . ".png" ; Round to the nearest multiple of 10
+    }
+    else {
+        ; Calculate the appropriate image between 10 (red) and 1 (most red) based on the VIX value
         ; Use a max VIX value to cap the gradient (set it to a high value if you don't want a cap)
-			maxVIX := 100
-			relativeValue := (value - vixThresholds[2]) / (maxVIX - vixThresholds[2])
-			imageIndex := 50 - (10 * relativeValue)
-			return ImageFolder . Round(imageIndex / 10) * 10 . ".png" ; Limit the minimum index to 1 (most red)
-		}
-	}
-	
-	
+        maxVIX := 100
+        relativeValue := (value - vixThresholds[3]) / (maxVIX - vixThresholds[3])
+        imageIndex := 10 - (9 * relativeValue)
+        return ImageFolder . Round(imageIndex / 10) * 10 . ".png" ; Limit the minimum index to 1 (most red)
+    }
+}
+
 	GetPCRGradientImage(value, reverse := false) {
 		ImageFolder := A_MyDocuments . "\DTraderTools\resources\images\"
 		gradientRange := [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -405,7 +393,7 @@ Loop, % ImageList.MaxIndex() {
 ; Define thresholds for VIX, Put/Call ratio, and S&P 500 vs. 200 DMA
 ;vixThresholds := [6, 12, 14, 16, 18, 20, 22, 24, 26]
 	putCallThresholds := [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3]
-	sp500RelThresholds := [-10, -5, -2, -0.5, 0, 0.5, 2, 5, 10]
+	sp500RelThresholds := [-5, -2, -1, -0.5, 0, 1, 0.5, 2, 5]
 	
 ; Calculate the S&P 500 relationship to its 200 DMA
 ; sp500RelValue := ((sp500CurrentValue - sp500_200DMA) / sp500_200DMA) * 100
@@ -414,8 +402,6 @@ Loop, % ImageList.MaxIndex() {
 	vixImage := 
 	putCallImage := 
 	sp500RelImage :=
-	
-	
 	
 	CheckImagesDownloaded:
 ; Check if all images have been downloaded
@@ -506,7 +492,6 @@ Loop, % ImageList.MaxIndex() {
 			}
 		}
 		return
-		
 		
 		CB:
 		GuiControlGet, ticker
@@ -783,18 +768,17 @@ Loop, % ImageList.MaxIndex() {
 			valueSP500 :=
 			sp500RelValue := "..."
 			temppath := A_MyDocuments . "\DTraderTools\resources\temp.txt"
+			FileRead, fileContent, %temppath%
 			FileReadLine, VIXnum, %temppath%, 1
 			FileReadLine, PCRnum, %temppath%, 2
 			FileReadLine, SP, %temppath%, 3
-		;MsgBox, % "test" . VIXnum . PCRnum . SP	
 		}
-				
 		
 	; Get the gradient images for the values
 		vixImage := GetVIXGradientImage(VIXnum)
 		putCallImage := GetPCRGradientImage(PCRnum)
-		sp500RelImage := GetGradientImage(Round(newsp500RelValue), sp500RelThresholds)
-		Gui, Add, Text, x390 y493 w30 vSP, % Round(newsp500RelValue) . "%"
+		sp500RelImage := GetGradientImage(Round(SP), sp500RelThresholds)
+		Gui, Add, Text, x390 y493 w30 vSP, % Round(SP) . "%"
 		
     ; Update the GUI text with the obtained values
 		GuiControl,, PutCall, %PCRnum%
