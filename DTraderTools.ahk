@@ -10,7 +10,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 EnvGet, A_LocalAppData, LocalAppData
 
 CV = 2.65
-LE = Last updated 4/03/2023
+LE = Last updated 4/14/2023
 
 last_changes =
 	(
