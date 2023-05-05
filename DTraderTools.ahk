@@ -9,16 +9,20 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.65
-LE = Last updated 4/14/2023
+CV = 2.66
+LE = Last updated 5/05/2023
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
 	
+	¡La edición del cinco de mayo!
+	
 	* added "refresh" button
 	   
-	* fixed bug with gradient colors   
+	* fixed bug with gradient colors
+	
+	* made VIX, PCR, SP500 load 1.9 seconds faster
 
 	)
 
@@ -760,7 +764,7 @@ GetVIXGradientImage(value) {
 		FetchAndUpdate:
 		
 		try {
-			sleep 2000
+			sleep 100
 			VIXnum := "..."
 			PCRnum := "..."
 			value200DMA := 
