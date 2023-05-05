@@ -16,8 +16,8 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	¡La edición del cinco de mayo!
-	
+	🥑 💃 🌵 ¡La edición del cinco de mayo! 🌶️ 🌮 🏜️
+	 
 	* added "refresh" button
 	   
 	* fixed bug with gradient colors
