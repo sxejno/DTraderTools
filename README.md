@@ -39,6 +39,7 @@ The script includes buttons to access the following websites and tools:
 * 200-day moving average PDF report (Button200DMA)
 * CME Group FedWatch Tool (ButtonFedWatch)
 * CME Group OPEC Watch Tool (ButtonOPECWatch)
+* Truflation (TRU)
 
 ### Help and Support
 There is an option to "request a feature" and to "report a bug", if you click on "Shane's Trader Tools" on the bottom of the program.
