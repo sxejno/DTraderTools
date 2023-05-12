@@ -9,18 +9,16 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.68
-LE = Last updated 5/10/2023
+CV = 2.69
+LE = Last updated 5/12/2023
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* moved ChatGPT icon
+	* changed economic calendar icon
 	
-	* added economic calendar
-	
-	* FBN & Bloomberg now show in new chrome window
+	* added special link for DomDom
 
 	)
 
@@ -148,6 +146,9 @@ try {
 	;Gui, Add, Button,gCalc x182 y429 w70 h30, Calculator
 	;Gui, Add, Button, x262 y419 w70 h30, Button4
 	;Gui, Add, Button, x342 y419 w70 h30, Button5
+	
+	Gui, Add, Link, x207 y209, <a href="https://tinyurl.com/2p8sayt3">St Pete Beach Vacation Virtual Visit</a>
+	
 	
 	Gui, Add, Picture, gTF x290 y420 w126 h30 BackgroundTrans, %imgTF%
 	Gui, Add, Picture, gChatGPT x425 y425 w25 h25 BackgroundTrans, %imgChatGPT%
