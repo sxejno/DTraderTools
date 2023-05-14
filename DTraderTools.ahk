@@ -150,7 +150,8 @@ try {
 	;Gui, Add, Button, x262 y419 w70 h30, Button4
 	;Gui, Add, Button, x342 y419 w70 h30, Button5
 	
-	Gui, Add, Link, x207 y209, <a href="https://tinyurl.com/2p8sayt3">St Pete Beach Vacation Virtual Visit</a>
+	;Gui, Add, Link, x207 y209, <a href="https://tinyurl.com/2p8sayt3">St Pete Beach Vacation Virtual Visit</a>
+	Gui, Add, Button, x192 y207 w260 h20 , St Pete Beach Vacation Virtual Visit
 	
 	
 	Gui, Add, Picture, gTF x290 y420 w126 h30 BackgroundTrans, %imgTF%
@@ -757,6 +758,77 @@ GetVIXGradientImage(value) {
 		site = https://www.cmegroup.com/trading/energy/cme-opec-watch-tool.html
 		Run %site%
 		return
+		
+		ButtonStPeteBeachVacationVirtualVisit:
+		MsgBox,36,St Pete Beach Vacation Virtual Visit,Are you ready for your virtual visit to St Pete?
+		IfMsgBox, Yes
+		{
+			url1 := "https://www.doncesar.com/live-view"
+			url2 := "https://www.vpix.net/753946"
+			url3 := "https://tinyurl.com/2p8sayt3"
+			
+		; Run Chrome with the first URL and wait for it to open
+			Run, chrome.exe --new-window "%url1%"
+			WinWait, ahk_class Chrome_WidgetWin_1
+			
+		; Set the first Chrome window as the active window
+			WinActivate, ahk_class Chrome_WidgetWin_1
+			Sleep, 500 ; Add a small delay to ensure the window is active
+			
+		; Move and resize the first Chrome window to the left side of the screen
+			WinMove, A, , 0, 0, A_ScreenWidth/2, A_ScreenHeight
+			
+		; Run Chrome with the second URL and wait for it to open
+			Run, chrome.exe --new-window "%url2%"
+			WinWait, ahk_class Chrome_WidgetWin_1, , 3
+			
+		; Set the second Chrome window as the active window
+			WinActivate, ahk_class Chrome_WidgetWin_1
+			Sleep, 500 ; Add a small delay to ensure the window is active
+			
+		; Move and resize the second Chrome window to the right side of the screen
+			WinMove, A, , A_ScreenWidth/2, 0, A_ScreenWidth/2, A_ScreenHeight
+			
+			Sleep 5000
+			MsgBox,,St Pete Beach Vacation Virtual Visit, here is where you really wanna go though...,3
+			Run, chrome.exe --new-window "%url3%"
+		}
+		IfMsgBox, No
+		{
+			MsgBox,,St Pete Beach Vacation Virtual Visit, too bad we are going anyway!,2
+			url1 := "https://www.doncesar.com/live-view"
+			url2 := "https://www.vpix.net/753946"
+			url3 := "https://tinyurl.com/2p8sayt3"
+			
+		; Run Chrome with the first URL and wait for it to open
+			Run, chrome.exe --new-window "%url1%"
+			WinWait, ahk_class Chrome_WidgetWin_1
+			
+		; Set the first Chrome window as the active window
+			WinActivate, ahk_class Chrome_WidgetWin_1
+			Sleep, 500 ; Add a small delay to ensure the window is active
+			
+		; Move and resize the first Chrome window to the left side of the screen
+			WinMove, A, , 0, 0, A_ScreenWidth/2, A_ScreenHeight
+			
+		; Run Chrome with the second URL and wait for it to open
+			Run, chrome.exe --new-window "%url2%"
+			WinWait, ahk_class Chrome_WidgetWin_1, , 3
+			
+		; Set the second Chrome window as the active window
+			WinActivate, ahk_class Chrome_WidgetWin_1
+			Sleep, 500 ; Add a small delay to ensure the window is active
+			
+		; Move and resize the second Chrome window to the right side of the screen
+			WinMove, A, , A_ScreenWidth/2, 0, A_ScreenWidth/2, A_ScreenHeight
+			
+			Sleep 5000
+			MsgBox,,St Pete Beach Vacation Virtual Visit, here is where you really wanna go though...,3
+			Run, chrome.exe --new-window "%url3%"			
+		}
+		
+		return
+		
 		
 		help:
 		MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          Â© 2022-2023 Kassandra, LLC                   https://kassandra.llc
