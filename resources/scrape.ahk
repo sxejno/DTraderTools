@@ -7,6 +7,17 @@ response := httpObj.ResponseText
 pattern := "(\d+\.\d+)\s+for\s+(\w+\s+\d+\s+\d+)"
 RegExMatch(response, pattern, result)
 PutCallRatio := Trim(result)
+
+GAS_url := "https://ycharts.com/indicators/us_gas_price"
+httpObj2 := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+httpObj2.Open("GET", GAS_url)
+httpObj2.Send()
+response2 := httpObj2.ResponseText
+pattern2 := "(\d+\.\d+(?=\sUSD/gal for Wk))"
+RegExMatch(response2, pattern2, result2)
+GAS := Trim(result2)
+
+
 VIX_url := "https://ycharts.com/indicators/vix_volatility_index"
 httpObj2 := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 httpObj2.Open("GET", VIX_url)
@@ -21,8 +32,8 @@ httpObj.Open("GET", 200DMA_url, false)
 httpObj.Send()
 csvData := httpObj.ResponseText
 ; Parse the first two values from the A column in the CSV data (A1 and A2)
-	Loop, Parse, csvData, `n, `r
-	{
+Loop, Parse, csvData, `n, `r
+{
 		StringSplit, rowData, A_LoopField, `,
 		if (A_Index = 1)
 			value200DMA := rowData1
@@ -36,7 +47,8 @@ newsp500RelValue := ((valueSP500 - value200DMA) / valueSP500) * 100
 newsp500RelValue := Round(newsp500RelValue) . "%"
 RegExMatch(PutCallRatio, "(\d+\.\d+)", PCRnum)
 RegExMatch(VIX, "(\d+\.\d+)", VIXnum)
+RegExMatch(GAS, "(\d+\.\d+)", GASprc)
 ResourcesFolder := A_MyDocuments . "\DTraderTools\resources\"
 FileDelete, %ResourcesFolder%temp.txt
-FileAppend, %VIXnum%`n%PCRnum%`n%newsp500RelValue%, %ResourcesFolder%temp.txt
+FileAppend, %VIXnum%`n%PCRnum%`n%newsp500RelValue%`n%GASprc%, %ResourcesFolder%temp.txt
 ExitApp
