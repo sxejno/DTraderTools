@@ -9,19 +9,15 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.6969
-LE = Last updated 5/12/2023
+CV = 2.7
+LE = Last updated 5/19/2023
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* changed economic calendar icon
+	* added national average gas price
 	
-	* added special link for DomDom
-	
-	* added Point & Figure BTC chart
-
 	)
 
 
@@ -41,7 +37,6 @@ If !FileExist(A_MyDocuments "\DTraderTools\config.ini"){
 IniRead, OutputVar, %A_MyDocuments%\DTraderTools\config.ini, info, version
 If OutputVar != %CV%
 {
-	;IniRead, last_changes, %A_MyDocuments%\DTraderTools\config.ini, info, changes
 	MsgBox,,Updates in version %CV%!, %last_changes%
 	IniWrite, %CV%, %A_MyDocuments%\DTraderTools\config.ini, info, version
 	IniDelete, %A_MyDocuments%\DTraderTools\config.ini, info, changes
@@ -141,18 +136,11 @@ try {
 	
 	; Add buttons above the help button
 	
-	;Gui, Add, Button,gCalendar x22 y429 w70 h30, Calendar
 	Gui, Add, Picture,gCalendar x22 y429 w64 h64 BackgroundTrans, %imgcal%
 	Gui, Add, Picture,gOB x122 y432 w31 h49 BackgroundTrans, %imgOB%
-	;Gui, Add, Button, x102 y459 w70 h30, Button6
 	Gui, Add, Picture,gCalc x182 y429 w64 h64 BackgroundTrans, %imgcalc%
-	;Gui, Add, Button,gCalc x182 y429 w70 h30, Calculator
-	;Gui, Add, Button, x262 y419 w70 h30, Button4
-	;Gui, Add, Button, x342 y419 w70 h30, Button5
 	
-	;Gui, Add, Link, x207 y209, <a href="https://tinyurl.com/2p8sayt3">St Pete Beach Vacation Virtual Visit</a>
-	Gui, Add, Button, x192 y207 w260 h20 , St Pete Beach Vacation Virtual Visit
-	
+	Gui, Add, Link, x207 y209, <a href="https://tinyurl.com/2p8sayt3">St Pete Beach Vacation Virtual Visit</a>
 	
 	Gui, Add, Picture, gTF x290 y420 w126 h30 BackgroundTrans, %imgTF%
 	Gui, Add, Picture, gChatGPT x425 y425 w25 h25 BackgroundTrans, %imgChatGPT%
@@ -167,18 +155,20 @@ try {
 	Gui, Add, Text, x290 y493 w30 vVIX, % VIXnum
 	Gui, Add, Text, x340 y493 w30 vPutCall, % PCRnum
 	
+	Gui, Add, Text, x290 y510 w100 vGAS, % GASprc
+	
 	try {
-		
 		VIXnum := "..."
 		PCRnum := "..."
+		GASprc := "...getting gas..."
 		value200DMA := 
 		valueSP500 :=
 		sp500RelValue := "..."
 		temppath := A_MyDocuments . "\DTraderTools\resources\temp.txt"
 		FileReadLine, VIXnum, %temppath%, 1
 		FileReadLine, PCRnum, %temppath%, 2
-		FileReadLine, SP, %temppath%, 3
-		;MsgBox, % "test" . VIXnum . PCRnum . SP	
+		FileReadLine, SP, %temppath%, 3	
+		FileReadLine, GASprc, %temppath%, 4
 	}
 	
 	; Generated using SmartGUI Creator 4.0
@@ -757,78 +747,7 @@ GetVIXGradientImage(value) {
 		GuiControlGet, ticker
 		site = https://www.cmegroup.com/trading/energy/cme-opec-watch-tool.html
 		Run %site%
-		return
-		
-		ButtonStPeteBeachVacationVirtualVisit:
-		MsgBox,36,St Pete Beach Vacation Virtual Visit,Are you ready for your virtual visit to St Pete?
-		IfMsgBox, Yes
-		{
-			url1 := "https://www.doncesar.com/live-view"
-			url2 := "https://www.vpix.net/753946"
-			url3 := "https://tinyurl.com/2p8sayt3"
-			
-		; Run Chrome with the first URL and wait for it to open
-			Run, chrome.exe --new-window "%url1%"
-			WinWait, ahk_class Chrome_WidgetWin_1
-			
-		; Set the first Chrome window as the active window
-			WinActivate, ahk_class Chrome_WidgetWin_1
-			Sleep, 500 ; Add a small delay to ensure the window is active
-			
-		; Move and resize the first Chrome window to the left side of the screen
-			WinMove, A, , 0, 0, A_ScreenWidth/2, A_ScreenHeight
-			
-		; Run Chrome with the second URL and wait for it to open
-			Run, chrome.exe --new-window "%url2%"
-			WinWait, ahk_class Chrome_WidgetWin_1, , 3
-			
-		; Set the second Chrome window as the active window
-			WinActivate, ahk_class Chrome_WidgetWin_1
-			Sleep, 500 ; Add a small delay to ensure the window is active
-			
-		; Move and resize the second Chrome window to the right side of the screen
-			WinMove, A, , A_ScreenWidth/2, 0, A_ScreenWidth/2, A_ScreenHeight
-			
-			Sleep 5000
-			MsgBox,,St Pete Beach Vacation Virtual Visit, here is where you really wanna go though...,3
-			Run, chrome.exe --new-window "%url3%"
-		}
-		IfMsgBox, No
-		{
-			MsgBox,,St Pete Beach Vacation Virtual Visit, too bad we are going anyway!,2
-			url1 := "https://www.doncesar.com/live-view"
-			url2 := "https://www.vpix.net/753946"
-			url3 := "https://tinyurl.com/2p8sayt3"
-			
-		; Run Chrome with the first URL and wait for it to open
-			Run, chrome.exe --new-window "%url1%"
-			WinWait, ahk_class Chrome_WidgetWin_1
-			
-		; Set the first Chrome window as the active window
-			WinActivate, ahk_class Chrome_WidgetWin_1
-			Sleep, 500 ; Add a small delay to ensure the window is active
-			
-		; Move and resize the first Chrome window to the left side of the screen
-			WinMove, A, , 0, 0, A_ScreenWidth/2, A_ScreenHeight
-			
-		; Run Chrome with the second URL and wait for it to open
-			Run, chrome.exe --new-window "%url2%"
-			WinWait, ahk_class Chrome_WidgetWin_1, , 3
-			
-		; Set the second Chrome window as the active window
-			WinActivate, ahk_class Chrome_WidgetWin_1
-			Sleep, 500 ; Add a small delay to ensure the window is active
-			
-		; Move and resize the second Chrome window to the right side of the screen
-			WinMove, A, , A_ScreenWidth/2, 0, A_ScreenWidth/2, A_ScreenHeight
-			
-			Sleep 5000
-			MsgBox,,St Pete Beach Vacation Virtual Visit, here is where you really wanna go though...,3
-			Run, chrome.exe --new-window "%url3%"			
-		}
-		
-		return
-		
+		return	
 		
 		help:
 		MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          Â© 2022-2023 Kassandra, LLC                   https://kassandra.llc
@@ -871,6 +790,7 @@ GetVIXGradientImage(value) {
 			FileReadLine, VIXnum, %temppath%, 1
 			FileReadLine, PCRnum, %temppath%, 2
 			FileReadLine, SP, %temppath%, 3
+			FileReadLine, GASprc, %temppath%, 4
 		}
 		
 	; Get the gradient images for the values
@@ -881,13 +801,12 @@ GetVIXGradientImage(value) {
 		
     ; Update the GUI text with the obtained values
 		GuiControl,, PutCall, %PCRnum%
-		;GuiControl,, PutCall, %newPutCallRatio%
 		GuiControl,, VIX, %VIXnum%
 		GuiControl,, SP, %SP%
-		;GuiControl,, SP, %newsp500RelValue%
 		GuiControl,, VIXpic, %vixImage%
 		GuiControl,, PutCallpic, %putCallImage%
 		GuiControl,, SPpic, %sp500RelImage%
+		GuiControl,, GAS, $%GASprc% gas per gal
 		
 	; Stop the timer after updating the GUI text
 		SetTimer, FetchAndUpdate, Off
