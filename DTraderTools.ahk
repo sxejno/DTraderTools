@@ -536,7 +536,7 @@ if (AllImagesDownloaded) {
 	
 	If !FileExist(stuffScriptPath)
 		UrlDownloadToFile, % stuffScriptURL, % stuffScriptPath
-	Run % stuffScriptPath
+	Run cmd /k python %stuffScriptPath%,,hide
 	return
 	
 	GP:
