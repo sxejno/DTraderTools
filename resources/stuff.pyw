@@ -14,7 +14,12 @@ def get_pricing_info():
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'lxml')
 
-    date = "*** COPPER & COIL PRICES (per lb) ***"
+    # Look for the first h3 tag within a blockquote
+    updated_text = soup.find('blockquote').find('h3')
+    if updated_text:
+        date = updated_text.text.strip()  # Extract the date
+    else:
+        date = "Date not found"
 
     # Find the copper section
     copper_section = soup.find(string='Copper (per lb)').find_next('p')
@@ -28,6 +33,7 @@ def get_pricing_info():
             if line.startswith(item):
                 pricing_info[item] = line.split(' - ')[-1].strip('$')
     return date, pricing_info
+
 
 def display_pricing_info():
     date, pricing_info = get_pricing_info()
