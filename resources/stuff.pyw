@@ -13,6 +13,7 @@ def get_pricing_info():
     url = 'https://www.stuffrecycling.com/pricing'
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'lxml')
+    title = "*** COPPER & COIL PRICES (per lb) ***"
 
     # Look for the first h3 tag within a blockquote
     updated_text = soup.find('blockquote').find('h3')
@@ -32,9 +33,9 @@ def get_pricing_info():
         for item in items:
             if line.startswith(item):
                 pricing_info[item] = line.split(' - ')[-1].strip('$')
-    return date, pricing_info
-
-
+    return "*** COPPER & COIL PRICES (per lb) ***\n\n" + "✓ Prices Last " + date, pricing_info
+   
+   
 def display_pricing_info():
     date, pricing_info = get_pricing_info()
     msg = f"{date}\n\n"
