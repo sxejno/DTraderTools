@@ -8,24 +8,16 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.71
-LE = Last updated 5/21/2023
+CV = 2.72
+LE = Last updated 6/04/2023
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* added national average gas price
+	* most links should now open in new window
 	
-	* removed St Pete virtual visit
-	
-	* created backups folder for backups
-	
-	* fixed a bug with updater where no 
-	message was shown when current version 
-	is equal to latest version
-	
-	* added tool for scrap metal prices
+	* added "last updated" date for Stuff tool
 	
 	)
 
@@ -508,41 +500,59 @@ if (AllImagesDownloaded) {
 	CB:
 	GuiControlGet, ticker
 	site = https://pro.coinbase.com/trade/BTC-USD
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return 
 	
 	CD:
 	GuiControlGet, ticker
 	site = https://www.coindesk.com/
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	CNN:
 	GuiControlGet, ticker
 	site = https://www.cnn.com/business/markets/premarkets
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	GF:
 	GuiControlGet, ticker
 	site = https://www.google.com/finance/?hl=en
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	SR:
-	; Download the scrape.ahk script if it doesn't exist in the resources folder
-	stuffScriptPath := ResourcesFolder . "\stuff.pyw"
+	; find python install dir hopefully...
+	RunWait, %ComSpec% /c where python > temp.txt,, hide
+	FileRead, PythonPath, temp.txt
+	FileDelete, temp.txt
+	if (PythonPath = "") 
+	{
+		MsgBox, No compatible version of Python was found. Please install Python 3.8 or later.
+		return
+	}
+	
+	; Download the stuff.pyw script if it doesn't exist in the resources folder
+	stuffScriptPath := ResourcesFolder "\stuff.pyw"
 	stuffScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/stuff.pyw" 
 	
-	If !FileExist(stuffScriptPath)
-		UrlDownloadToFile, % stuffScriptURL, % stuffScriptPath
-	Run cmd /k python %stuffScriptPath%,,hide
+	; Download the stuff.pyw script anyway
+	UrlDownloadToFile, %stuffScriptURL%, %stuffScriptPath%
+	
+	;RunWait the Python script
+	;RunWait, %ComSpec% /c %PythonPath% %stuffScriptPath%
+	RunWait, %stuffScriptPath%
+	if ErrorLevel != 0
+		MsgBox, The Python script encountered an error. Let Shane know.
 	return
+	
+	
+	
 	
 	GP:
 	GuiControlGet, ticker
 	site = https://goldprice.org/
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	BTV:
@@ -554,43 +564,43 @@ if (AllImagesDownloaded) {
 	ChatGPT:
 	GuiControlGet, ticker
 	site = https://chat.openai.com/chat
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ST:
 	GuiControlGet, ticker
 	site = https://stocktwits.com/symbol/%ticker%
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	FV:
 	GuiControlGet, ticker
 	site = https://finviz.com/quote.ashx?t=%ticker%
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	TR:
 	GuiControlGet, ticker
 	site = https://www.tipranks.com/stocks/%ticker%
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	TF:
 	GuiControlGet, ticker
 	site = https://truflation.com
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ECAL:
 	GuiControlGet, ticker
 	site = https://www.marketwatch.com/economy-politics/calendar
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	XO:
 	GuiControlGet, ticker
 	site = https://stockcharts.com/freecharts/pnf.php?c=`%24BTCUSD,PGPADEYRNR[PA][D][F1!3!1.0!!0!20]
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	Calendar:
@@ -642,123 +652,123 @@ if (AllImagesDownloaded) {
 	
 	/*
 	; work in progress update to updater that saves a user-specified number of backups	
-	STT:
+		STT:
 		; Check if config file exists, if not, create it
-	IfExist, %A_MyDocuments%\DTraderTools\config.ini
-	if ErrorLevel
-	{
-		FileAppend,, %A_MyDocuments%\DTraderTools\config.ini
-		AskUserForBackupNumber()
-	}
-	
+		IfExist, %A_MyDocuments%\DTraderTools\config.ini
+		if ErrorLevel
+		{
+			FileAppend,, %A_MyDocuments%\DTraderTools\config.ini
+			AskUserForBackupNumber()
+		}
+		
 	; Read the backups to keep number from the config file
-	IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
-	if backupsToKeep = 
-	{
-		AskUserForBackupNumber()
-	}
-	
-	if NV != %CV%
-	{
-		MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
-		
-		IfMsgBox No
-			return
-		IfMsgBox Yes
+		IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
+		if backupsToKeep = 
 		{
-			MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
-			FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
-			Sleep, 100
-			FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
-			DeleteOldBackups(backupsToKeep)
-			UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
-			MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
-			Run, %A_ScriptDir%\DTraderTools.ahk
-			ExitApp
-		}
-	}
-	else if NV = %CV%
-	{
-		MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
-	}
-	
-	AskUserForBackupNumber()
-	{
-		InputBox, backupsToKeep, Backups to keep, Please enter the number of backups to keep:
-		IniWrite, %backupsToKeep%, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
-	}
-	
-	DeleteOldBackups(backupsToKeep)
-	{
-    ; Loop through the backup files and delete the oldest ones if they exceed the limit
-		FileList =
-		Loop, %A_MyDocuments%\DTraderTools\backups\*.ahk
-		{
-			FileList = %FileList%%A_LoopFileName%`n
+			AskUserForBackupNumber()
 		}
 		
-		Sort, FileList, D`n ; Sort by date modified, oldest first
-		
-		Loop, Parse, FileList, `n
+		if NV != %CV%
 		{
-			If (A_Index > backupsToKeep)
+			MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
+			
+			IfMsgBox No
+				return
+			IfMsgBox Yes
 			{
-				FileDelete, %A_MyDocuments%\DTraderTools\backups\%A_LoopField%
+				MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
+				FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
+				Sleep, 100
+				FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
+				DeleteOldBackups(backupsToKeep)
+				UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
+				MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
+				Run, %A_ScriptDir%\DTraderTools.ahk
+				ExitApp
 			}
 		}
-	}
-	return
+		else if NV = %CV%
+		{
+			MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
+		}
+		
+		AskUserForBackupNumber()
+		{
+			InputBox, backupsToKeep, Backups to keep, Please enter the number of backups to keep:
+			IniWrite, %backupsToKeep%, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
+		}
+		
+		DeleteOldBackups(backupsToKeep)
+		{
+    ; Loop through the backup files and delete the oldest ones if they exceed the limit
+			FileList =
+			Loop, %A_MyDocuments%\DTraderTools\backups\*.ahk
+			{
+				FileList = %FileList%%A_LoopFileName%`n
+			}
+			
+			Sort, FileList, D`n ; Sort by date modified, oldest first
+			
+			Loop, Parse, FileList, `n
+			{
+				If (A_Index > backupsToKeep)
+				{
+					FileDelete, %A_MyDocuments%\DTraderTools\backups\%A_LoopField%
+				}
+			}
+		}
+		return
 	*/
 	
 	
 	
 	
-		
-		STT:
-		MsgBox, 4, Update Shane's Trader Tools, Check for update now?, 5
-		
-		IfMsgBox No
-		{
-			MsgBox, 4, Feature Request & Bug Reporting, Want to REQUEST A FEATURE or REPORT A BUG?
-			IfMsgBox Yes
-				Run, https://forms.gle/Apubmtc1cmbhpSu59
-			else IfMsgBox No
-				return
-		}
-		else IfMsgBox Timeout
-		{
+	
+	STT:
+	MsgBox, 4, Update Shane's Trader Tools, Check for update now?, 5
+	
+	IfMsgBox No
+	{
+		MsgBox, 4, Feature Request & Bug Reporting, Want to REQUEST A FEATURE or REPORT A BUG?
+		IfMsgBox Yes
+			Run, https://forms.gle/Apubmtc1cmbhpSu59
+		else IfMsgBox No
 			return
-		}
-		else IfMsgBox Yes
-		{
-			GitHubVersionURL := "https://pastebin.com/raw/QL0NgcCM"
-			GitHubScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk"
-			NV := URLDownloadToVar(GitHubVersionURL)
-			
-			if NV != %CV%
-			{
-				MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
-				
-				IfMsgBox No
-					return
-				IfMsgBox Yes
-				{
-					MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
-					FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
-					Sleep, 100
-					FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
-					UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
-					MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
-					Run, %A_ScriptDir%\DTraderTools.ahk
-					ExitApp
-				}
-			}
-			else if NV = %CV%
-			{
-				MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
-			}
-		}
+	}
+	else IfMsgBox Timeout
+	{
 		return
+	}
+	else IfMsgBox Yes
+	{
+		GitHubVersionURL := "https://pastebin.com/raw/QL0NgcCM"
+		GitHubScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk"
+		NV := URLDownloadToVar(GitHubVersionURL)
+		
+		if NV != %CV%
+		{
+			MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
+			
+			IfMsgBox No
+				return
+			IfMsgBox Yes
+			{
+				MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
+				FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
+				Sleep, 100
+				FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
+				UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
+				MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
+				Run, %A_ScriptDir%\DTraderTools.ahk
+				ExitApp
+			}
+		}
+		else if NV = %CV%
+		{
+			MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
+		}
+	}
+	return
 	
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -768,19 +778,19 @@ if (AllImagesDownloaded) {
 	Buttongreeks:
 	GuiControlGet, ticker
 	site = https://www.barchart.com/stocks/quotes/%ticker%/volatility-greeks
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ButtonTradingView:
 	GuiControlGet, ticker
 	site = https://www.tradingview.com/chart/?symbol=%ticker%
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ButtonStockCharts:
 	GuiControlGet, ticker
 	site = https://stockcharts.com/h-sc/ui?s=%ticker%
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ButtonOpenAll:
@@ -803,49 +813,49 @@ if (AllImagesDownloaded) {
 	ButtonDollarCostAverage:
 	GuiControlGet, ticker
 	site = https://percentagetools.com/dollar-cost-average-calculator/
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ButtonOptionsTrackerSheet:
 	GuiControlGet, ticker
 	site = https://docs.google.com/spreadsheets/d/1e75HlZs9G4v0jcpHkvtl4NiBjv_iJa7pvm4sMiF4qzM/
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ButtonOptionsProfitCalculator:
 	GuiControlGet, ticker
 	site = https://www.optionsprofitcalculator.com/
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ButtonStockRow:
 	GuiControlGet, ticker
 	site = https://stockrow.com/
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ButtonBloombergLiveTV:
 	GuiControlGet, ticker
 	site = https://www.bloomberg.com/live/us/btv
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	Button200DMA:
 	GuiControlGet, ticker
 	site = https://www.yardeni.com/pub/stmkt200dma.pdf
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ButtonFedWatch:
 	GuiControlGet, ticker
 	site = https://www.cmegroup.com/trading/interest-rates/countdown-to-fomc.html
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	ButtonOPECWatch:
 	GuiControlGet, ticker
 	site = https://www.cmegroup.com/trading/energy/cme-opec-watch-tool.html
-	Run %site%
+	Run chrome.exe %site% " --new-window "
 	return	
 	
 	help:
