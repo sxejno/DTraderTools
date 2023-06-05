@@ -567,17 +567,21 @@ if (AllImagesDownloaded) {
 		}
 	}
 	
+	MsgBox % PythonPath 
+	
 	; If we couldn't find Python in the common directories, let's try to find it using the "where" command.
 	if (PythonPath = "")
 	{
 		RunWait, %ComSpec% /c where python > temp.txt,, hide
 		FileRead, PythonPath, temp.txt
 		FileDelete, temp.txt
+		MsgBox % PythonPath 
 	}
 	
 	; If we still couldn't find Python, let's show an error message and stop.
 	if (PythonPath = "") 
 	{
+		MsgBox % PythonPath
 		MsgBox, No compatible version of Python was found. Please install Python 3.10 or later.
 		return
 	}
