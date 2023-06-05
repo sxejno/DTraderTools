@@ -8,8 +8,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.72
-LE = Last updated 6/04/2023
+CV = 2.73
+LE = Last updated 6/05/2023
 
 last_changes =
 	(
@@ -18,6 +18,8 @@ last_changes =
 	* most links should now open in new window
 	
 	* added "last updated" date for Stuff tool
+	
+	* made Stuff scrap tool more robust
 	
 	)
 
@@ -521,14 +523,62 @@ if (AllImagesDownloaded) {
 	Run chrome.exe %site% " --new-window "
 	return
 	
+	/* ; old way 
+		SR:
+	; find python install dir hopefully...
+		RunWait, %ComSpec% /c where python > temp.txt,, hide
+		FileRead, PythonPath, temp.txt
+		FileDelete, temp.txt
+		if (PythonPath = "") 
+		{
+			MsgBox, No compatible version of Python was found. Please install Python 3.8 or later.
+			return
+		}
+		
+	; Download the stuff.pyw script if it doesn't exist in the resources folder
+		stuffScriptPath := ResourcesFolder "\stuff.pyw"
+		stuffScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/stuff.pyw" 
+		
+	; Download the stuff.pyw script anyway
+		UrlDownloadToFile, %stuffScriptURL%, %stuffScriptPath%
+		
+	;RunWait the Python script
+	;RunWait, %ComSpec% /c %PythonPath% %stuffScriptPath%
+		
+		RunWait, %stuffScriptPath%
+		if ErrorLevel != 0
+			MsgBox, The Python script encountered an error. Let Shane know.
+		return
+	*/
+	
 	SR:
 	; find python install dir hopefully...
-	RunWait, %ComSpec% /c where python > temp.txt,, hide
-	FileRead, PythonPath, temp.txt
-	FileDelete, temp.txt
+	Username := A_UserName
+	PythonPaths := ["C:\Users\" . Username . "\AppData\Local\Programs\Python\Python312\python.exe", "C:\Users\" . Username . "\AppData\Local\Programs\Python\Python311\python.exe", "C:\Users\" . Username . "\AppData\Local\Programs\Python\Python310\python.exe", "C:\Program Files\Python312\python.exe", "C:\Program Files\Python311\python.exe", "C:\Program Files\Python310\python.exe"]
+	PythonPath := ""
+	
+	; Let's try to find Python in the most common directories.
+	For index, path in PythonPaths
+	{
+		If FileExist(path)
+		{
+			PythonPath := path
+			Break
+		}
+	}
+	
+	; If we couldn't find Python in the common directories, let's try to find it using the "where" command.
+	if (PythonPath = "")
+	{
+		RunWait, %ComSpec% /c where python > temp.txt,, hide
+		FileRead, PythonPath, temp.txt
+		FileDelete, temp.txt
+	}
+	
+	; If we still couldn't find Python, let's show an error message and stop.
 	if (PythonPath = "") 
 	{
-		MsgBox, No compatible version of Python was found. Please install Python 3.8 or later.
+		MsgBox, No compatible version of Python was found. Please install Python 3.10 or later.
 		return
 	}
 	
@@ -539,13 +589,34 @@ if (AllImagesDownloaded) {
 	; Download the stuff.pyw script anyway
 	UrlDownloadToFile, %stuffScriptURL%, %stuffScriptPath%
 	
-	;RunWait the Python script
-	;RunWait, %ComSpec% /c %PythonPath% %stuffScriptPath%
-	RunWait, %stuffScriptPath%
-	if ErrorLevel != 0
-		MsgBox, The Python script encountered an error. Let Shane know.
+	; try to run stuff python script different ways
+	Try
+	{
+		; try to run directly
+		RunWait, %stuffScriptPath%
+		if ErrorLevel != 0
+		{
+			MsgBox, The Python script returned an error code. Let Shane know.
+			return
+		}
+	}
+	Catch
+	{
+		
+		; if it fails to run directly, we will try to run it with the full python path
+		RunWait, %PythonPath% %stuffScriptPath%
+		if ErrorLevel != 0
+		{
+			; If script fails to run directly, try running with 'python' command
+			RunWait, %ComSpec% /c python %stuffScriptPath%
+			if ErrorLevel != 0
+			{
+				MsgBox, The Python script returned an error code. Let Shane know.
+				return
+			}
+		}
+	}
 	return
-	
 	
 	
 	
@@ -604,7 +675,8 @@ if (AllImagesDownloaded) {
 	return
 	
 	Calendar:
-	Run https://calendar.google.com
+	site = https://calendar.google.com
+	Run chrome.exe %site% " --new-window "
 	return
 	
 	Calc:
@@ -859,7 +931,7 @@ if (AllImagesDownloaded) {
 	return	
 	
 	help:
-	MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          Â© 2022-2023 Kassandra, LLC                   https://kassandra.llc
+	MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
 	return
 	
 	ButtonGo:
