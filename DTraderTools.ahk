@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.73
+CV = 2.74
 LE = Last updated 6/05/2023
 
 last_changes =
@@ -567,21 +567,17 @@ if (AllImagesDownloaded) {
 		}
 	}
 	
-	MsgBox % PythonPath 
-	
 	; If we couldn't find Python in the common directories, let's try to find it using the "where" command.
 	if (PythonPath = "")
 	{
 		RunWait, %ComSpec% /c where python > temp.txt,, hide
 		FileRead, PythonPath, temp.txt
 		FileDelete, temp.txt
-		MsgBox % PythonPath 
 	}
 	
 	; If we still couldn't find Python, let's show an error message and stop.
 	if (PythonPath = "") 
 	{
-		MsgBox % PythonPath
 		MsgBox, No compatible version of Python was found. Please install Python 3.10 or later.
 		return
 	}
@@ -600,25 +596,25 @@ if (AllImagesDownloaded) {
 		RunWait, %stuffScriptPath%
 		if ErrorLevel != 0
 		{
-			MsgBox, The Python script returned an error code. Let Shane know.
-			return
+			; if it fails to run directly, we will try to run it with the full python path
+			RunWait, %PythonPath% %stuffScriptPath%
+			if ErrorLevel != 0
+			{
+			; If script fails to run directly, try running with 'python' command
+				RunWait, %ComSpec% /c python %stuffScriptPath%
+				if ErrorLevel != 0
+				{
+					MsgBox, The Python script returned an error code. Let Shane know.
+					return
+				}
+			}
 		}
 	}
 	Catch
 	{
 		
-		; if it fails to run directly, we will try to run it with the full python path
-		RunWait, %PythonPath% %stuffScriptPath%
-		if ErrorLevel != 0
-		{
-			; If script fails to run directly, try running with 'python' command
-			RunWait, %ComSpec% /c python %stuffScriptPath%
-			if ErrorLevel != 0
-			{
-				MsgBox, The Python script returned an error code. Let Shane know.
-				return
-			}
-		}
+		MsgBox, The Python script returned an error code. Let Shane know.
+		return
 	}
 	return
 	
