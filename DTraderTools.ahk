@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.74
+CV = 2.75
 LE = Last updated 6/05/2023
 
 last_changes =
@@ -20,6 +20,8 @@ last_changes =
 	* added "last updated" date for Stuff tool
 	
 	* made Stuff scrap tool more robust
+	
+	* added option to set # of retained backups
 	
 	)
 
@@ -213,6 +215,88 @@ Try {
 	Goto, StartScript
 }
 
+; Check if config file exists, if not, create it
+IfExist, %A_MyDocuments%\DTraderTools\config.ini
+{
+	if ErrorLevel
+	{
+		FileAppend,, %A_MyDocuments%\DTraderTools\config.ini
+		AskUserForBackupNumber()
+	}
+}
+else
+{
+	FileAppend,, %A_MyDocuments%\DTraderTools\config.ini
+	AskUserForBackupNumber()
+}
+
+; Read the backups to keep number from the config file
+IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
+
+; If backupsToKeep is empty or not a number, ask the user
+if (backupsToKeep = "" || !IsNumber(backupsToKeep)) 
+{
+	AskUserForBackupNumber()
+}
+
+AskUserForBackupNumber()
+{
+	InputBox, backupsToKeep, Backups to keep, Please enter the number of backups to keep:
+	; Check if the input is a number and is not less than 1
+	if (!IsNumber(backupsToKeep) || backupsToKeep < 1)
+	{
+		MsgBox, Please enter a valid number of backups to keep.
+		AskUserForBackupNumber()
+	}
+	else
+	{
+		IniWrite, %backupsToKeep%, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
+	}
+}
+
+IsNumber(str)
+{
+	RegExMatch(str, "^\d+$", match)
+	if (match = "")
+	{
+		return false
+	}
+	else
+	{
+		return true
+	}
+}
+
+
+; Check if there is a new version available
+If (NV != CV) {
+	MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
+	IfMsgBox, No ; "No" button
+		Goto, StartScript
+	IfMsgBox, Yes ; "Yes" button
+	{
+        ; Add update process here
+		
+		MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
+		FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
+		Sleep, 100
+		FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
+		; Read the backups to keep number from the config file
+		IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
+		DeleteOldBackups(backupsToKeep) ; Call to delete old backups after making a new one
+		UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
+		MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
+		Run, %A_ScriptDir%\DTraderTools.ahk
+		ExitApp
+	}
+} Else {
+	Goto, StartScript
+}
+
+
+
+/*
+	;old way
 ; Check if there is a new version available
 If (NV != CV) {
 	MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
@@ -233,6 +317,7 @@ If (NV != CV) {
 } Else {
 	Goto, StartScript
 }
+*/
 
 ; Add a label here to start your script normally when there is no update or the user declines the update
 StartScript:
@@ -722,126 +807,132 @@ if (AllImagesDownloaded) {
 	}
 	return
 	
-	/*
+	
 	; work in progress update to updater that saves a user-specified number of backups	
-		STT:
+	STT:
 		; Check if config file exists, if not, create it
-		IfExist, %A_MyDocuments%\DTraderTools\config.ini
-		if ErrorLevel
-		{
-			FileAppend,, %A_MyDocuments%\DTraderTools\config.ini
-			AskUserForBackupNumber()
-		}
-		
+	IfExist, %A_MyDocuments%\DTraderTools\config.ini
+	if ErrorLevel
+	{
+		FileAppend,, %A_MyDocuments%\DTraderTools\config.ini
+		AskUserForBackupNumber()
+	}
+	
 	; Read the backups to keep number from the config file
-		IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
-		if backupsToKeep = 
-		{
-			AskUserForBackupNumber()
-		}
+	IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
+	if backupsToKeep = 
+	{
+		AskUserForBackupNumber()
+	}
+	
+	if NV != %CV%
+	{
+		MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
 		
-		if NV != %CV%
+		IfMsgBox No
+			return
+		IfMsgBox Yes
 		{
-			MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
-			
-			IfMsgBox No
-				return
-			IfMsgBox Yes
-			{
-				MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
-				FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
-				Sleep, 100
-				FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
-				DeleteOldBackups(backupsToKeep)
-				UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
-				MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
-				Run, %A_ScriptDir%\DTraderTools.ahk
-				ExitApp
-			}
+			MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
+			FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
+			Sleep, 100
+			FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
+			; Read the backups to keep number from the config file
+			IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
+			DeleteOldBackups(backupsToKeep)
+			UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
+			MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
+			Run, %A_ScriptDir%\DTraderTools.ahk
+			ExitApp
 		}
-		else if NV = %CV%
-		{
-			MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
-		}
-		
+	}
+	else if NV = %CV%
+	{
+		MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
+	}
+	
+	/*
 		AskUserForBackupNumber()
 		{
 			InputBox, backupsToKeep, Backups to keep, Please enter the number of backups to keep:
 			IniWrite, %backupsToKeep%, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
 		}
-		
-		DeleteOldBackups(backupsToKeep)
+	*/
+	return
+	
+	DeleteOldBackups(backupsToKeep)
+	{
+			; Loop through the backup files and delete the oldest ones if they exceed the limit
+		FileList =
+		Loop, %A_MyDocuments%\DTraderTools\backups\*.ahk
 		{
-    ; Loop through the backup files and delete the oldest ones if they exceed the limit
-			FileList =
-			Loop, %A_MyDocuments%\DTraderTools\backups\*.ahk
+				; Check if filename contains "DTraderTools_backup"
+			if InStr(A_LoopFileName, "DTraderTools_backup")
 			{
 				FileList = %FileList%%A_LoopFileName%`n
 			}
-			
-			Sort, FileList, D`n ; Sort by date modified, oldest first
-			
-			Loop, Parse, FileList, `n
+		}
+		
+		Sort, FileList, D`n ; Sort by date modified, oldest first
+		
+		Loop, Parse, FileList, `n
+		{
+			If (A_Index > backupsToKeep)
 			{
-				If (A_Index > backupsToKeep)
+				FileDelete, %A_MyDocuments%\DTraderTools\backups\%A_LoopField%
+			}
+		}
+	}
+	
+	
+	
+	/* old way
+		STT:
+		MsgBox, 4, Update Shane's Trader Tools, Check for update now?, 5
+		
+		IfMsgBox No
+		{
+			MsgBox, 4, Feature Request & Bug Reporting, Want to REQUEST A FEATURE or REPORT A BUG?
+			IfMsgBox Yes
+				Run, https://forms.gle/Apubmtc1cmbhpSu59
+			else IfMsgBox No
+				return
+		}
+		else IfMsgBox Timeout
+		{
+			return
+		}
+		else IfMsgBox Yes
+		{
+			GitHubVersionURL := "https://pastebin.com/raw/QL0NgcCM"
+			GitHubScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk"
+			NV := URLDownloadToVar(GitHubVersionURL)
+			
+			if NV != %CV%
+			{
+				MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
+				
+				IfMsgBox No
+					return
+				IfMsgBox Yes
 				{
-					FileDelete, %A_MyDocuments%\DTraderTools\backups\%A_LoopField%
+					MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
+					FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
+					Sleep, 100
+					FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
+					UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
+					MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
+					Run, %A_ScriptDir%\DTraderTools.ahk
+					ExitApp
 				}
+			}
+			else if NV = %CV%
+			{
+				MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
 			}
 		}
 		return
 	*/
-	
-	
-	
-	
-	
-	STT:
-	MsgBox, 4, Update Shane's Trader Tools, Check for update now?, 5
-	
-	IfMsgBox No
-	{
-		MsgBox, 4, Feature Request & Bug Reporting, Want to REQUEST A FEATURE or REPORT A BUG?
-		IfMsgBox Yes
-			Run, https://forms.gle/Apubmtc1cmbhpSu59
-		else IfMsgBox No
-			return
-	}
-	else IfMsgBox Timeout
-	{
-		return
-	}
-	else IfMsgBox Yes
-	{
-		GitHubVersionURL := "https://pastebin.com/raw/QL0NgcCM"
-		GitHubScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk"
-		NV := URLDownloadToVar(GitHubVersionURL)
-		
-		if NV != %CV%
-		{
-			MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
-			
-			IfMsgBox No
-				return
-			IfMsgBox Yes
-			{
-				MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
-				FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
-				Sleep, 100
-				FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
-				UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
-				MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
-				Run, %A_ScriptDir%\DTraderTools.ahk
-				ExitApp
-			}
-		}
-		else if NV = %CV%
-		{
-			MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
-		}
-	}
-	return
-	
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;     Button controls                                                   ;
