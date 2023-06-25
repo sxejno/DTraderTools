@@ -8,12 +8,14 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.75
-LE = Last updated 6/05/2023
+CV = 2.76
+LE = Last updated 6/25/2023
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
+	
+	* added UnusualWhales Options Profit Calculator
 	
 	* most links should now open in new window
 	
@@ -988,7 +990,12 @@ if (AllImagesDownloaded) {
 	ButtonOptionsProfitCalculator:
 	GuiControlGet, ticker
 	site = https://www.optionsprofitcalculator.com/
-	Run chrome.exe %site% " --new-window "
+	site2 = https://unusualwhales.com/options-profit-calculator
+	MsgBox, 4,, Open UnusualWhales Option Profit Calculator?`n`n Pressing "No" will open the original options profit calculator.
+	IfMsgBox Yes
+		Run chrome.exe %site2% " --new-window "
+	Else
+		Run chrome.exe %site% " --new-window "
 	return
 	
 	ButtonStockRow:
