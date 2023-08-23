@@ -8,22 +8,20 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.76
-LE = Last updated 6/25/2023
+CV = 2.77
+; automatically update lastupdateddate based on last modified time
+FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
+FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
+lastupdateddate := TimeString
+LE = Last updated: %lastupdateddate%
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* added UnusualWhales Options Profit Calculator
+	* added UnusualWhales to greeks button
 	
-	* most links should now open in new window
-	
-	* added "last updated" date for Stuff tool
-	
-	* made Stuff scrap tool more robust
-	
-	* added option to set # of retained backups
+	* made "last updated date" dynamic
 	
 	)
 
@@ -943,7 +941,15 @@ if (AllImagesDownloaded) {
 	Buttongreeks:
 	GuiControlGet, ticker
 	site = https://www.barchart.com/stocks/quotes/%ticker%/volatility-greeks
-	Run chrome.exe %site% " --new-window "
+	If (ticker != "")
+	{
+		Run chrome.exe %site% " --new-window "
+		Run chrome.exe https://unusualwhales.com/options-profit-calculator "--new-tab"
+	}
+	If (ticker = "")
+	{
+		Run chrome.exe https://unusualwhales.com/options-profit-calculator "--new-tab"
+	}
 	return
 	
 	ButtonTradingView:
