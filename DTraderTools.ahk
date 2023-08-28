@@ -8,16 +8,20 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.77
+CV = 2.78
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
 lastupdateddate := TimeString
-LE = Last updated: %lastupdateddate%
+LE := "Last updated: ".lastupdateddate
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
+	
+	* added watched ticker price at top
+	  click to set the "watched ticker"
+	  it updates price every 30 seconds
 	
 	* added UnusualWhales to greeks button
 	
@@ -57,6 +61,28 @@ IfNotExist, %A_MyDocuments%\DTraderTools\backups
 {
 	FileCreateDir, %A_MyDocuments%\DTraderTools\backups
 }
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                                                                       ;
+;                    ticker watcher preferences                         ; 
+;                                                                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+; Read watched_ticker from config file
+IniRead, watch, %A_MyDocuments%\DTraderTools\config.ini, settings, watched_ticker
+
+; Check if watched_ticker is not empty in the config
+if (watch != "")
+{
+    ; watch is already set to the value from the config file, no need to set it again
+}
+else ; if watch is empty or not found in the config
+{
+	IniWrite, ETV, %A_MyDocuments%\DTraderTools\config.ini, settings, watched_ticker
+}
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -115,6 +141,10 @@ try {
 	Gui, Add, Button, x102 y59 w70 h60 , Options Tracker sheet
 	Gui, Add, Button, x302 y159 w70 h30 , StockCharts
 	Gui, Add, Button, x212 y159 w80 h30 , TradingView
+	Gui, Font, s8 cPurple Bold, Verdana
+	;Gui, Add, Text, x222 y3 w160 vPriceText, fetching price... 
+	Gui, Add, Text, x222 y3 w160 vPriceText gUpdateWatch, fetching price... 
+	Gui, Font,
 	Gui, Add, GroupBox, x192 y19 w260 h190 , View Ticker on:
 	Gui, Add, GroupBox, x202 y139 w180 h60 , Charting:
 	Gui, Add, GroupBox, x342 y29 w100 h60 , Options:
@@ -292,8 +322,6 @@ If (NV != CV) {
 } Else {
 	Goto, StartScript
 }
-
-
 
 /*
 	;old way
@@ -474,8 +502,6 @@ GetGradientImage(value, thresholds, reverse := false) {
 }
 
 
-
-
 ; Example values (replace these with the actual fetched values)
 vixValue = VIXnum
 putCallRatio = PCRnum
@@ -494,6 +520,11 @@ sp500RelThresholds := [-5, -2, -1, -0.5, 0, 1, 0.5, 2, 5]
 vixImage := 
 putCallImage := 
 sp500RelImage :=
+
+
+
+FetchPrice()
+
 
 CheckImagesDownloaded:
 ; Check if all images have been downloaded
@@ -1035,7 +1066,7 @@ if (AllImagesDownloaded) {
 	return	
 	
 	help:
-	MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, `nassume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
+	MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, assume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
 	return
 	
 	ButtonGo:
@@ -1059,7 +1090,7 @@ if (AllImagesDownloaded) {
 	return
 	
 	GuiClose:
-	ExitApp		
+	ExitApp	
 	
 	FetchAndUpdate:
 	try {
@@ -1076,6 +1107,7 @@ if (AllImagesDownloaded) {
 		FileReadLine, SP, %temppath%, 3
 		FileReadLine, GASprc, %temppath%, 4
 	}
+	
 	
 	; Get the gradient images for the values
 	vixImage := GetVIXGradientImage(VIXnum)
@@ -1096,6 +1128,71 @@ if (AllImagesDownloaded) {
 	; Stop the timer after updating the GUI text
 	SetTimer, FetchAndUpdate, Off
 	return
+	
+	/*
+	try
+	{
+		global watch
+		; Read watched_ticker from config file
+		IniWrite, %newwatch%, %A_MyDocuments%\DTraderTools\config.ini, info, watched_ticker
+		
+	; If watched_ticker is not found in the config, use default "ETV"
+		if (%newwatch% = "")
+		{
+			watch := "ETV"
+		}
+		
+	}
+	catch
+	{
+		watch := "ETV"
+	}
+	*/
+	
+	UpdateWatch:
+	global watch
+    ; Show input box to update the variable
+	InputBox, userInput, Update Watched Ticker, Enter a ticker to watch:
+    ; Update the variable and the GUI text element
+	if (ErrorLevel = 0) ; Check if user pressed OK in the input box
+	{
+		newwatch := userInput
+		watch := newwatch
+		IniWrite, %newwatch%, %A_MyDocuments%\DTraderTools\config.ini, settings, watched_ticker
+	;GuiControl,, PriceText
+		GuiControl,, x222 y3 vPriceText
+		FetchPrice()
+	}
+	return
+	
+	
+	
+	FetchPrice() {
+		global watch
+	; Create the XMLHTTP object and store it in a variable
+		xmlObj := ComObjCreate("MSXML2.ServerXMLHTTP.6.0")
+		
+    ; Run the command to fetch HTML and store it in a variable
+		xmlObj.open("GET", "https://www.cnbc.com/quotes/"watch, false)
+		xmlObj.setRequestHeader("User-Agent", "Mozilla/5.0")
+		xmlObj.send()
+		htmlContent := xmlObj.responseText
+		
+    ; Use RegEx to find the price
+		RegExMatch(htmlContent, """price"":""(\d+\.\d+)""", match)
+		
+		if (match1 != "") {
+        ; Update the text in the GUI
+			GuiControl,, PriceText, %watch% Price: $%match1%
+		} else {
+        ; Failed to fetch price
+			GuiControl,, PriceText, Failed to fetch price
+		}
+	}
+	
+	
+	; Timer to refresh the price every 30 seconds (30000 milliseconds)
+	SetTimer, FetchPrice, 30000
 	
 	
 ; Function to check and download images
@@ -1124,3 +1221,4 @@ if (AllImagesDownloaded) {
 	
 	return
 }
+
