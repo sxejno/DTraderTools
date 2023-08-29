@@ -8,22 +8,19 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.78
+CV = 2.79
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
 lastupdateddate := TimeString
-LE := "Last updated: ".lastupdateddate
+LE = Last updated: %lastupdateddate%
 
 last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* added watched ticker price at top
-	  click to set the "watched ticker"
-	  it updates price every 30 seconds
-	
-	* added UnusualWhales to greeks button
+	* made background transparent on
+	  text label for watched ticker
 	
 	* made "last updated date" dynamic
 	
@@ -143,9 +140,9 @@ try {
 	Gui, Add, Button, x212 y159 w80 h30 , TradingView
 	Gui, Font, s8 cPurple Bold, Verdana
 	;Gui, Add, Text, x222 y3 w160 vPriceText, fetching price... 
-	Gui, Add, Text, x222 y3 w160 vPriceText gUpdateWatch, fetching price... 
+	Gui, Add, Text, x222 y3 w160 vPriceText gUpdateWatch BackgroundTrans, fetching price... 
 	Gui, Font,
-	Gui, Add, GroupBox, x192 y19 w260 h190 , View Ticker on:
+	Gui, Add, GroupBox, x192 y19 w260 h190, View Ticker on:
 	Gui, Add, GroupBox, x202 y139 w180 h60 , Charting:
 	Gui, Add, GroupBox, x342 y29 w100 h60 , Options:
 	Gui, Add, GroupBox, x22 y359 w430 h60 , Accounts:
@@ -670,7 +667,7 @@ if (AllImagesDownloaded) {
 	SR:
 	; find python install dir hopefully...
 	Username := A_UserName
-	PythonPaths := ["C:\Users\" . Username . "\AppData\Local\Programs\Python\Python312\python.exe", "C:\Users\" . Username . "\AppData\Local\Programs\Python\Python311\python.exe", "C:\Users\" . Username . "\AppData\Local\Programs\Python\Python310\python.exe", "C:\Program Files\Python312\python.exe", "C:\Program Files\Python311\python.exe", "C:\Program Files\Python310\python.exe"]
+	PythonPaths := ["C:\Users\" . Username . "\AppData\Local\Programs\Python\Python312\python.exe", "C:\Users\" . Username . "\AppData\Local\Programs\Python\Python311\python.exe", "C:\Users\" . Username . "\AppData\Local\Programs\Python\Python310\python.exe", "C:\Program Files\Python312\python.exe", "C:\Program Files\Python311\python.exe", "C:\Program Files\Python310\python.exe", "python.exe"]
 	PythonPath := ""
 	
 	; Let's try to find Python in the most common directories.
