@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.81
+CV = 2.82
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -20,6 +20,8 @@ last_changes =
 	Here's what's new in version %CV%:
 	
 	* added link for Dan Niles articles
+	
+	* fixed feature request / bug reporter
 	
 	)
 
@@ -803,6 +805,22 @@ if (AllImagesDownloaded) {
 	
 	; work in progress update to updater that saves a user-specified number of backups	
 	STT:
+	MsgBox, 4, Update Shane's Trader Tools, Check for update now?, 5
+	IfMsgBox No
+	{
+		MsgBox, 4, Feature Request & Bug Reporting, Want to REQUEST A FEATURE or REPORT A BUG?
+		IfMsgBox Yes
+			Run, https://forms.gle/Apubmtc1cmbhpSu59
+		else IfMsgBox No
+			return
+	}
+	else IfMsgBox Timeout
+	{
+		return
+	}
+	else IfMsgBox Yes
+	{
+		
 		; Check if config file exists, if not, create it
 	IfExist, %A_MyDocuments%\DTraderTools\config.ini
 	if ErrorLevel
@@ -843,7 +861,7 @@ if (AllImagesDownloaded) {
 	{
 		MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
 	}
-	
+	}
 	/*
 		AskUserForBackupNumber()
 		{
