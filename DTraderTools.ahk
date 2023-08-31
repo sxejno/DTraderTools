@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.8
+CV = 2.81
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -19,7 +19,7 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* added alternates for FBN
+	* added link for Dan Niles articles
 	
 	)
 
@@ -130,9 +130,10 @@ try {
 	Gui, Add, Edit, x82 y19 w100 h30 vticker Uppercase r1
 	Gui, Add, Picture, gButtongreeks x352 y49 w80 h30 BackgroundTrans, %imgGreeks%
 	Gui, Add, GroupBox, x22 y219 w430 h130 , Useful stuff:
-	Gui, Add, Button, x22 y129 w150 h30 , Options Profit Calculator
-	Gui, Add, Button, x22 y59 w70 h60 , Dollar Cost Average
-	Gui, Add, Button, x102 y59 w70 h60 , Options Tracker sheet
+	Gui, Add, Button, x22 y139 w150 h20 , Options Profit Calculator
+	Gui, Add, Button, x22 y59 w70 h40 , Dollar Cost Average
+	Gui, Add, Button, x22 y104 w70 h30 , Dan Niles
+	Gui, Add, Button, x102 y59 w70 h50 , Options Tracker sheet
 	Gui, Add, Button, x302 y159 w70 h30 , StockCharts
 	Gui, Add, Button, x212 y159 w80 h30 , TradingView
 	Gui, Font, s8 cPurple Bold, Verdana
@@ -926,6 +927,12 @@ if (AllImagesDownloaded) {
 	ButtonDollarCostAverage:
 	GuiControlGet, ticker
 	site = https://percentagetools.com/dollar-cost-average-calculator/
+	Run chrome.exe %site% " --new-window "
+	return
+	
+	ButtonDanNiles:
+	GuiControlGet, ticker
+	site = https://www.danniles.com/articles
 	Run chrome.exe %site% " --new-window "
 	return
 	
