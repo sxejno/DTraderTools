@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.82
+CV = 2.9
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -18,6 +18,8 @@ LE = Last updated: %lastupdateddate%
 last_changes =
 	(
 	Here's what's new in version %CV%:
+	
+	* added custom menu with 6 buttons
 	
 	* added link for Dan Niles articles
 	
@@ -68,6 +70,10 @@ IfNotExist, %A_MyDocuments%\DTraderTools\backups
 
 ; Read watched_ticker from config file
 IniRead, watch, %A_MyDocuments%\DTraderTools\config.ini, settings, watched_ticker
+
+; Load the setting for automatically showing the second GUI
+IniRead, AutoShowSecondGui, config.ini, Settings, AutoShowSecondGui, 0
+
 
 ; Check if watched_ticker is not empty in the config
 if (watch != "")
@@ -136,6 +142,7 @@ try {
 	Gui, Add, Button, x22 y59 w70 h40 , Dollar Cost Average
 	Gui, Add, Button, x22 y104 w70 h30 , Dan Niles
 	Gui, Add, Button, x102 y59 w70 h50 , Options Tracker sheet
+	Gui, Add, Button, x102 y114 w70 h20 , *Custom*
 	Gui, Add, Button, x302 y159 w70 h30 , StockCharts
 	Gui, Add, Button, x212 y159 w80 h30 , TradingView
 	Gui, Font, s8 cPurple Bold, Verdana
@@ -220,6 +227,7 @@ try {
 	CheckAndDownloadImages(ImageList, imageFolder)
 	Gui, Show
 }
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;                                                                       ;
@@ -540,13 +548,15 @@ if (AllImagesDownloaded) {
 	GuiControl, +Redraw, PicFox
 	GuiControlGet, ticker
 	site = https://www.newslive.com/business/fox-business-network-fbn.html
-	;site2 = http://www.freeintertv.com/view/id-2192
+	site2 = http://www.freeintertv.com/view/id-2192
 	site3 = https://livenewsof.com/fox-news-live-stream/
 	site4 = https://planetnews.com/live/fox-news-stream.html
-	Run chrome.exe %site% " --new-window "
+	site5 = https://thetvapp.to/tv/fox-business-network-live-stream/
+	Run chrome.exe %site5% " --new-window "
 	;Run chrome.exe %site2% "--new-tab"
-	Run chrome.exe %site3% "--new-tab"
-	Run chrome.exe %site4% "--new-tab"
+	;Run chrome.exe %site3% "--new-tab"
+	;Run chrome.exe %site4% "--new-tab"
+	;Run chrome.exe %site5% "--new-tab"
 	return 
 	
 	ToS:
@@ -822,45 +832,45 @@ if (AllImagesDownloaded) {
 	{
 		
 		; Check if config file exists, if not, create it
-	IfExist, %A_MyDocuments%\DTraderTools\config.ini
-	if ErrorLevel
-	{
-		FileAppend,, %A_MyDocuments%\DTraderTools\config.ini
-		AskUserForBackupNumber()
-	}
-	
-	; Read the backups to keep number from the config file
-	IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
-	if backupsToKeep = 
-	{
-		AskUserForBackupNumber()
-	}
-	
-	if NV != %CV%
-	{
-		MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
-		
-		IfMsgBox No
-			return
-		IfMsgBox Yes
+		IfExist, %A_MyDocuments%\DTraderTools\config.ini
+		if ErrorLevel
 		{
-			MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
-			FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
-			Sleep, 100
-			FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
-			; Read the backups to keep number from the config file
-			IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
-			DeleteOldBackups(backupsToKeep)
-			UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
-			MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
-			Run, %A_ScriptDir%\DTraderTools.ahk
-			ExitApp
+			FileAppend,, %A_MyDocuments%\DTraderTools\config.ini
+			AskUserForBackupNumber()
 		}
-	}
-	else if NV = %CV%
-	{
-		MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
-	}
+		
+	; Read the backups to keep number from the config file
+		IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
+		if backupsToKeep = 
+		{
+			AskUserForBackupNumber()
+		}
+		
+		if NV != %CV%
+		{
+			MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
+			
+			IfMsgBox No
+				return
+			IfMsgBox Yes
+			{
+				MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
+				FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
+				Sleep, 100
+				FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
+			; Read the backups to keep number from the config file
+				IniRead, backupsToKeep, %A_MyDocuments%\DTraderTools\config.ini, Settings, BackupsToKeep
+				DeleteOldBackups(backupsToKeep)
+				UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
+				MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
+				Run, %A_ScriptDir%\DTraderTools.ahk
+				ExitApp
+			}
+		}
+		else if NV = %CV%
+		{
+			MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
+		}
 	}
 	/*
 		AskUserForBackupNumber()
@@ -959,6 +969,106 @@ if (AllImagesDownloaded) {
 	site = https://docs.google.com/spreadsheets/d/1e75HlZs9G4v0jcpHkvtl4NiBjv_iJa7pvm4sMiF4qzM/
 	Run chrome.exe %site% " --new-window "
 	return
+	
+	
+	
+	
+	Button*Custom*:
+	; Load existing button configuration from .ini file
+	IniRead, button1_name, config.ini, BUTTONS, button1_name, Default1
+	IniRead, button1_url, config.ini, BUTTONS, button1_url, http://www.example1.com
+	IniRead, button2_name, config.ini, BUTTONS, button2_name, Default2
+	IniRead, button2_url, config.ini, BUTTONS, button2_url, http://www.example2.com
+	IniRead, button3_name, config.ini, BUTTONS, button3_name, Default3
+	IniRead, button3_url, config.ini, BUTTONS, button3_url, http://www.example3.com
+	IniRead, button4_name, config.ini, BUTTONS, button4_name, Default4
+	IniRead, button4_url, config.ini, BUTTONS, button4_url, http://www.example4.com
+	IniRead, button5_name, config.ini, BUTTONS, button5_name, Default5
+	IniRead, button5_url, config.ini, BUTTONS, button5_url, http://www.example5.com
+	IniRead, button6_name, config.ini, BUTTONS, button6_name, Default6
+	IniRead, button6_url, config.ini, BUTTONS, button6_url, http://www.example6.com
+	
+; Create the GUI
+	
+	Gui, 2:New
+	yPos := 10
+	Loop, 6
+	{
+		Gui, 2:Add, Button, x10 y%yPos% w200 h40 vButton%A_Index% gGoToURL%A_Index%, % button%A_Index%_name
+		Gui, 2:Add, Button, x220 y%yPos% w50 h40 gEditButton%A_Index%, ✏
+		yPos += 50
+	}
+	
+	Gui, 2:Show, w280 h320, 6 Editable Buttons
+	Return
+	
+; Button Functions
+	GoToURL1:
+	Run, %button1_url%
+	Return
+	
+	GoToURL2:
+	Run, %button2_url%
+	Return
+	
+	GoToURL3:
+	Run, %button3_url%
+	Return
+	
+	GoToURL4:
+	Run, %button4_url%
+	Return
+	
+	GoToURL5:
+	Run, %button5_url%
+	Return
+	
+	GoToURL6:
+	Run, %button6_url%
+	Return
+	
+; Edit Button Functions
+	EditButton1:
+	EditButton(1, button1_name, button1_url)
+	Return
+	
+	EditButton2:
+	EditButton(2, button2_name, button2_url)
+	Return
+	
+	EditButton3:
+	EditButton(3, button3_name, button3_url)
+	Return
+	
+	EditButton4:
+	EditButton(4, button4_name, button4_url)
+	Return
+	
+	EditButton5:
+	EditButton(5, button5_name, button5_url)
+	Return
+	
+	EditButton6:
+	EditButton(6, button6_name, button6_url)
+	Return
+	
+	EditButton(button_number, ByRef button_name, ByRef button_url)
+	{
+		InputBox, new_name, Edit Button Name, Enter new button name:
+		InputBox, new_url, Edit Button URL, Enter new URL:
+		
+    ; Update button settings
+		GuiControl,, Button%button_number%, %new_name%
+		button_name := new_name
+		button_url := new_url
+		
+    ; Save new configuration to .ini file
+		IniWrite, %new_name%, config.ini, Buttons, button%button_number%_name
+		IniWrite, %new_url%, config.ini, Buttons, button%button_number%_url
+	}
+	return
+	
+	
 	
 	ButtonOptionsProfitCalculator:
 	GuiControlGet, ticker
