@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.79
+CV = 2.8
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -19,10 +19,7 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* made background transparent on
-	  text label for watched ticker
-	
-	* made "last updated date" dynamic
+	* added alternates for FBN
 	
 	)
 
@@ -320,30 +317,6 @@ If (NV != CV) {
 	Goto, StartScript
 }
 
-/*
-	;old way
-; Check if there is a new version available
-If (NV != CV) {
-	MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
-	IfMsgBox, No ; "No" button
-		Goto, StartScript
-	IfMsgBox, Yes ; "Yes" button
-	{
-        ; Add update process here
-		MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
-		FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
-		Sleep, 100
-		FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
-		UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
-		MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
-		Run, %A_ScriptDir%\DTraderTools.ahk
-		ExitApp
-	}
-} Else {
-	Goto, StartScript
-}
-*/
-
 ; Add a label here to start your script normally when there is no update or the user declines the update
 StartScript:
 ; Your script should continue here
@@ -381,8 +354,6 @@ DownloadImageScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools
 If !FileExist(DownloadImageScriptPath)
 	UrlDownloadToFile, % DownloadImageScriptURL, % DownloadImageScriptPath
 
-
-
 ; Create an object to store missing images
 MissingImages := {}
 
@@ -405,8 +376,6 @@ Loop, % MissingImages.MaxIndex() {
 	Run, % A_AhkPath . " " . DownloadScript . " " . ImageName . " " . ImageURL . " " . ImageFolder,, UseErrorLevel
 }
 
-
-
 WatchFolder(folder, event) {
 	static handles := {}
 	if (!handles[folder]) {
@@ -424,9 +393,6 @@ WatchFolder(folder, event) {
 WatchImagesFolder() {
 	WatchFolder(A_MyDocuments . "\DTraderTools\resources\images", "CheckImagesDownloaded")
 }
-
-
-
 
 ; Function to get VIX gradient image based on input VIX value
 GetVIXGradientImage(value) {
@@ -483,7 +449,6 @@ InterpolateValues(minValue, maxValue, ratio) {
 	return minValue + (maxValue - minValue) * ratio
 }
 
-
 	; Function to get gradient image based on input value and thresholds
 GetGradientImage(value, thresholds, reverse := false) {
 	ImageFolder := A_MyDocuments . "\DTraderTools\resources\images\"
@@ -497,7 +462,6 @@ GetGradientImage(value, thresholds, reverse := false) {
 	}
 	return reverse ? A_MyDocuments . "\DTraderTools\resources\images\10.png" : A_MyDocuments . "\DTraderTools\resources\images\100.png"
 }
-
 
 ; Example values (replace these with the actual fetched values)
 vixValue = VIXnum
@@ -518,10 +482,8 @@ vixImage :=
 putCallImage := 
 sp500RelImage :=
 
-
-
+; run fetchprice to get watched ticker price
 FetchPrice()
-
 
 CheckImagesDownloaded:
 ; Check if all images have been downloaded
@@ -543,7 +505,6 @@ if (AllImagesDownloaded) {
 	SetTimer, CheckImagesDownloaded, Off
 	Menu, Tray, Icon, % imgfavicon
 	Gui, Show, x878 y358 h531 w479, Shane's Trader Tools v%CV%
-	
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;     Helper to get version number to determine if update is needed     ;
@@ -576,7 +537,13 @@ if (AllImagesDownloaded) {
 	GuiControl, +Redraw, PicFox
 	GuiControlGet, ticker
 	site = https://www.newslive.com/business/fox-business-network-fbn.html
+	;site2 = http://www.freeintertv.com/view/id-2192
+	site3 = https://livenewsof.com/fox-news-live-stream/
+	site4 = https://planetnews.com/live/fox-news-stream.html
 	Run chrome.exe %site% " --new-window "
+	;Run chrome.exe %site2% "--new-tab"
+	Run chrome.exe %site3% "--new-tab"
+	Run chrome.exe %site4% "--new-tab"
 	return 
 	
 	ToS:
@@ -731,8 +698,6 @@ if (AllImagesDownloaded) {
 	}
 	return
 	
-	
-	
 	GP:
 	GuiControlGet, ticker
 	site = https://goldprice.org/
@@ -835,7 +800,6 @@ if (AllImagesDownloaded) {
 	}
 	return
 	
-	
 	; work in progress update to updater that saves a user-specified number of backups	
 	STT:
 		; Check if config file exists, if not, create it
@@ -911,56 +875,6 @@ if (AllImagesDownloaded) {
 			}
 		}
 	}
-	
-	
-	
-	/* old way
-		STT:
-		MsgBox, 4, Update Shane's Trader Tools, Check for update now?, 5
-		
-		IfMsgBox No
-		{
-			MsgBox, 4, Feature Request & Bug Reporting, Want to REQUEST A FEATURE or REPORT A BUG?
-			IfMsgBox Yes
-				Run, https://forms.gle/Apubmtc1cmbhpSu59
-			else IfMsgBox No
-				return
-		}
-		else IfMsgBox Timeout
-		{
-			return
-		}
-		else IfMsgBox Yes
-		{
-			GitHubVersionURL := "https://pastebin.com/raw/QL0NgcCM"
-			GitHubScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/DTraderTools.ahk"
-			NV := URLDownloadToVar(GitHubVersionURL)
-			
-			if NV != %CV%
-			{
-				MsgBox, 4, New version %NV% released!, Your current version is %CV% and the newest version is %NV%.`n`nUpdate Shane's Trader Tools to the newest version now?
-				
-				IfMsgBox No
-					return
-				IfMsgBox Yes
-				{
-					MsgBox,, Current Version Backup, Saving a copy of this current version to `n%A_MyDocuments%\DTraderTools\backups\DTraderTools-backup_v%CV%.ahk, 7
-					FileMove, %A_ScriptDir%/DTraderTools.ahk, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, 1
-					Sleep, 100
-					FileMove, %A_ScriptDir%/DTraderTools-backup_v%CV%.ahk, %A_MyDocuments%/DTraderTools/backups/DTraderTools_backup_v%CV%.ahk, 1
-					UrlDownloadToFile, %GitHubScriptURL%, %A_ScriptDir%/DTraderTools.ahk
-					MsgBox,, Update Checker, Shane's Trader Tools should be updated to version %NV%!, 7
-					Run, %A_ScriptDir%\DTraderTools.ahk
-					ExitApp
-				}
-			}
-			else if NV = %CV%
-			{
-				MsgBox,, Update Checker, Your current version is %CV% and the newest version is %NV%.`n`nShane's Trader Tools is up to date!
-			}
-		}
-		return
-	*/
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;     Button controls                                                   ;
@@ -1126,26 +1040,6 @@ if (AllImagesDownloaded) {
 	SetTimer, FetchAndUpdate, Off
 	return
 	
-	/*
-	try
-	{
-		global watch
-		; Read watched_ticker from config file
-		IniWrite, %newwatch%, %A_MyDocuments%\DTraderTools\config.ini, info, watched_ticker
-		
-	; If watched_ticker is not found in the config, use default "ETV"
-		if (%newwatch% = "")
-		{
-			watch := "ETV"
-		}
-		
-	}
-	catch
-	{
-		watch := "ETV"
-	}
-	*/
-	
 	UpdateWatch:
 	global watch
     ; Show input box to update the variable
@@ -1161,8 +1055,6 @@ if (AllImagesDownloaded) {
 		FetchPrice()
 	}
 	return
-	
-	
 	
 	FetchPrice() {
 		global watch
