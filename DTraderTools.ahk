@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.91
+CV = 2.92
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -19,7 +19,7 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* added oil futures
+	* now forces UPPERCASE for watched ticker
 	
 	)
 
@@ -1188,7 +1188,8 @@ if (AllImagesDownloaded) {
 	if (ErrorLevel = 0) ; Check if user pressed OK in the input box
 	{
 		newwatch := userInput
-		watch := newwatch
+		StringUpper,UPPERnewwatch,newwatch
+		watch := UPPERnewwatch
 		IniWrite, %newwatch%, %A_MyDocuments%\DTraderTools\config.ini, settings, watched_ticker
 	;GuiControl,, PriceText
 		GuiControl,, x222 y3 vPriceText
