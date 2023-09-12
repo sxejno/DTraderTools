@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.93
+CV = 2.94
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
