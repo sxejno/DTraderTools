@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.92
+CV = 2.93
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -19,7 +19,9 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* now forces UPPERCASE for watched ticker
+	* added Bitcoin Rainbow chart
+	
+	* relocated ChatGPT by BloombergTV
 	
 	)
 
@@ -116,6 +118,7 @@ imgcal:= A_MyDocuments . "\DTraderTools\resources\images\cal.png"
 imgcalc:= A_MyDocuments . "\DTraderTools\resources\images\calc.png"
 imghelp:= A_MyDocuments . "\DTraderTools\resources\images\help.png"
 imgrefresh:= A_MyDocuments . "\DTraderTools\resources\images\refresh.png"
+imgRAINBOW:= A_MyDocuments . "\DTraderTools\resources\images\btcrainbow.png"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;     Account names for dropdownlist                                    ;
@@ -163,7 +166,8 @@ try {
 	Gui, Add, Picture, gGF x162 y309 w100 h30 BackgroundTrans, %imgGF%
 	Gui, Add, Picture, gSR x272 y233 w100 h20 BackgroundTrans, %imgSR%
 	Gui, Add, Picture, gGP x272 y259 w100 h20 BackgroundTrans, %imgGP%
-	Gui, Add, Picture, gBTV x282 y289 w140 h50 BackgroundTrans, %imgBTV%
+	Gui, Add, Picture, gBTV x272 y289 w140 h50 BackgroundTrans, %imgBTV%
+	Gui, Add, Picture, gChatGPT x425 y319 w25 h25 BackgroundTrans, %imgChatGPT%
 	Gui, Add, Picture, gTR x352 y99 w90 h30 BackgroundTrans, %imgTR%
 	Gui, Add, Picture, gFV x202 y39 w80 h30 BackgroundTrans, %imgFV%
 	Gui, Add, Picture, gST x202 y89 w140 h50 BackgroundTrans, %imgST%
@@ -183,7 +187,8 @@ try {
 	Gui, Add, Picture,gCalc x182 y429 w64 h64 BackgroundTrans, %imgcalc%
 	
 	Gui, Add, Picture, gTF x290 y420 w126 h30 BackgroundTrans, %imgTF%
-	Gui, Add, Picture, gChatGPT x425 y425 w25 h25 BackgroundTrans, %imgChatGPT%
+	;Gui, Add, Picture, gChatGPT x425 y425 w25 h25 BackgroundTrans, %imgChatGPT%
+	Gui, Add, Picture, gBTCRainbow x425 y425 w50 h25 BackgroundTrans, %imgRAINBOW%
 	Gui, Add, Picture, gXO x425 y450 w50 h50 BackgroundTrans, %imgXO%
 	; CODE 2 integration - gradient boxes
 	Gui, Add, Link, x290 y453, <a href="https://ycharts.com/indicators/vix_volatility_index">VIX</a>
@@ -223,7 +228,7 @@ try {
 } catch {
 	Gui, Hide
 	ImageFolder := A_MyDocuments . "\DTraderTools\resources\images"
-	ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "oil", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/oil.png"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"},{"Name": "tru", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tru.png"},{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"},{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"},{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"},{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]	
+	ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "btcrainbow", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/btcrainbow.ico"},{"Name": "oil", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/oil.png"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"},{"Name": "tru", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tru.png"},{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"},{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"},{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"},{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]	
 	CheckAndDownloadImages(ImageList, imageFolder)
 	Gui, Show
 }
@@ -274,6 +279,7 @@ if (backupsToKeep = "" || !IsNumber(backupsToKeep))
 	AskUserForBackupNumber()
 }
 
+; Function to ask the user for the number of backups to keep
 AskUserForBackupNumber()
 {
 	InputBox, backupsToKeep, Backups to keep, Please enter the number of backups to keep:
@@ -289,6 +295,7 @@ AskUserForBackupNumber()
 	}
 }
 
+; makes sure "number of backups to keep" is an actual number
 IsNumber(str)
 {
 	RegExMatch(str, "^\d+$", match)
@@ -301,7 +308,6 @@ IsNumber(str)
 		return true
 	}
 }
-
 
 ; Check if there is a new version available
 If (NV != CV) {
@@ -340,7 +346,7 @@ StartScript:
 ; Check and download missing images
 ResourcesFolder := A_MyDocuments . "\DTraderTools\resources"
 ImageFolder := A_MyDocuments . "\DTraderTools\resources\images"
-ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "oil", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/oil.png"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"},{"Name": "tru", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tru.png"},{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"},{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"},{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"},{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]	
+ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "btcrainbow", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/btcrainbow.ico"},{"Name": "oil", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/oil.png"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"},{"Name": "tru", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tru.png"},{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"},{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"},{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"},{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]	
 
 
 CheckAndDownloadImages(ImageList, imageFolder)
@@ -726,6 +732,12 @@ if (AllImagesDownloaded) {
 	ChatGPT:
 	GuiControlGet, ticker
 	site = https://chat.openai.com/chat
+	Run chrome.exe %site% " --new-window "
+	return
+	
+	BTCRainbow:
+	GuiControlGet, ticker
+	site = https://www.blockchaincenter.net/en/bitcoin-rainbow-chart/
 	Run chrome.exe %site% " --new-window "
 	return
 	
@@ -1196,6 +1208,26 @@ if (AllImagesDownloaded) {
 		FetchPrice()
 	}
 	return
+	
+	;work in progress - second watched ticker
+	/*	
+		UpdateWatch2:
+		global watch
+    ; Show input box to update the variable
+		InputBox, userInput, Update 2nd Watched Ticker, Enter a ticker to watch:
+    ; Update the variable and the GUI text element
+		if (ErrorLevel = 0) ; Check if user pressed OK in the input box
+		{
+			newwatch2 := userInput
+			StringUpper,UPPERnewwatch2,newwatch2
+			watch2 := UPPERnewwatch2
+			IniWrite, %newwatch2%, %A_MyDocuments%\DTraderTools\config.ini, settings, watched_ticker_2
+	;GuiControl,, PriceText
+			GuiControl,, x222 y3 vPriceText
+			FetchPrice()
+		}
+		return
+	*/
 	
 	FetchPrice() {
 		global watch
