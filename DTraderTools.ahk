@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.94
+CV = 2.95
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -18,6 +18,8 @@ LE = Last updated: %lastupdateddate%
 last_changes =
 	(
 	Here's what's new in version %CV%:
+	
+	* added BTC Long-Short Ratio
 	
 	* added Bitcoin Rainbow chart
 	
@@ -145,6 +147,7 @@ try {
 	Gui, Add, Button, x102 y114 w70 h20 , *Custom*
 	Gui, Add, Button, x302 y159 w70 h30 , StockCharts
 	Gui, Add, Button, x212 y159 w80 h30 , TradingView
+	Gui, Add, Link, x212 y209, <a href="https://www.coinglass.com/LongShortRatio">BTC Long-Short Ratio</a>
 	Gui, Font, s8 cPurple Bold, Verdana
 	;Gui, Add, Text, x222 y3 w160 vPriceText, fetching price... 
 	Gui, Add, Text, x222 y3 w160 vPriceText gUpdateWatch BackgroundTrans, fetching price... 
