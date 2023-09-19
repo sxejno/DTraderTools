@@ -21,6 +21,8 @@ last_changes =
 	
 	* added Bitcoin Daily Discussion
 	
+	* added Fidelity to accounts
+	
 	* added BTC Long-Short Ratio
 	
 	* added Bitcoin Rainbow chart
