@@ -131,7 +131,7 @@ imgBTCD:= A_MyDocuments . "\DTraderTools\resources\images\btcdaily.png"
 
 accounts = 
 (
-Charles Schwab|TDAmeritrade|Nancy Barron|Edward Jones|Chase|Gemini|Kraken|cryptowatch
+Charles Schwab|TDAmeritrade|Fidelity|Nancy Barron|Edward Jones|Chase|Gemini|Kraken|cryptowatch
 )
 
 ; Set tray icon
@@ -1180,6 +1180,8 @@ if (AllImagesDownloaded) {
 		Run "https://client.schwab.com/clientapps/accounts/summary/"
 	If Acct = TDAmeritrade
 		Run "https://www.tdameritrade.com/"
+	If Acct = Fidelity
+		Run "https://www.fidelity.com/"
 	If Acct = Nancy Barron
 		Run "https://www.mystreetscape.com/login/access/investor-index.html"
 	If Acct = Edward Jones
