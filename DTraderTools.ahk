@@ -17,7 +17,7 @@ global oilPrice := ""
 
 
 
-CV = 2.97
+CV = 2.98
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -28,9 +28,11 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
+	* added btc price near long/shorts
+	
 	* added oil/gas price toggle
 	
-	* updated scrape.ahk to include oil
+	* updated scrape.ahk to include oil & btc
 	
 	* added gas pump icon for toggle
 	
@@ -159,6 +161,9 @@ try {
 	Gui, Add, Button, x302 y159 w70 h30 , StockCharts
 	Gui, Add, Button, x212 y159 w80 h30 , TradingView
 	Gui, Add, Link, x212 y209, <a href="https://www.coinglass.com/LongShortRatio">BTC Long-Short Ratio</a>
+	Gui, Font, s9 cPurple Bold, Verdana
+	Gui, Add, Text, x333 y209 vBTCprc w120 BackgroundTrans, get btc price...
+	
 	Gui, Font, s8 cPurple Bold, Verdana
 	;Gui, Add, Text, x222 y3 w160 vPriceText, fetching price... 
 	Gui, Add, Text, x222 y3 w160 vPriceText gUpdateWatch BackgroundTrans, fetching price... 
@@ -230,6 +235,7 @@ try {
 		value200DMA := 
 		valueSP500 :=
 		sp500RelValue := "..."
+		BTC := ""
 		temppath := A_MyDocuments . "\DTraderTools\resources\temp.txt"
 		FileReadLine, VIXnum, %temppath%, 1
 		FileReadLine, PCRnum, %temppath%, 2
@@ -237,6 +243,8 @@ try {
 		FileReadLine, GASprc, %temppath%, 4
 		FileReadLine, gasPrice, %temppath%, 4
 		FileReadLine, oilPrice, %temppath%, 5
+		FileReadLine, BTC, %temppath%, 6
+		BTC := AddCommas(BTC)
 	}
 	
 	; Generated using SmartGUI Creator 4.0
@@ -1222,18 +1230,22 @@ if (AllImagesDownloaded) {
 	
 	FetchAndUpdate:
 	try {
-		sleep 100
+		Run A_MyDocuments . "\DTraderTools\resources\scrape.ahk"
+		sleep 1000
 		VIXnum := "..."
 		PCRnum := "..."
+		BTC := ""
 		value200DMA := 
 		valueSP500 :=
 		sp500RelValue := "..."
+		sleep 1000
 		temppath := A_MyDocuments . "\DTraderTools\resources\temp.txt"
 		FileRead, fileContent, %temppath%
 		FileReadLine, VIXnum, %temppath%, 1
 		FileReadLine, PCRnum, %temppath%, 2
 		FileReadLine, SP, %temppath%, 3
 		FileReadLine, GASprc, %temppath%, 4
+		FileReadLine, BTC, %temppath%, 6
 	}
 	
 	
@@ -1252,6 +1264,8 @@ if (AllImagesDownloaded) {
 	GuiControl,, PutCallpic, %putCallImage%
 	GuiControl,, SPpic, %sp500RelImage%
 	GuiControl,, GAS, $%GASprc% gas
+	BTC := AddCommas(BTC)
+	GuiControl,, BTCprc, BTC: $%BTC%
 	
 	; Stop the timer after updating the GUI text
 	SetTimer, FetchAndUpdate, Off
@@ -1293,6 +1307,11 @@ if (AllImagesDownloaded) {
 		}
 		return
 	*/
+	
+	; Function to add commas to a number
+	AddCommas(x, s=",") {
+		return RegExReplace(x, "\G\d+?(?=(\d{3})+(?:\D|$))", "$0" s)
+	}
 	
 	FetchPrice() {
 		global watch
