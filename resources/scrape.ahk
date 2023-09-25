@@ -8,6 +8,7 @@ pattern := "(\d+\.\d+)\s+for\s+(\w+\s+\d+\s+\d+)"
 RegExMatch(response, pattern, result)
 PutCallRatio := Trim(result)
 
+; Code for scraping average gas price
 GAS_url := "https://ycharts.com/indicators/us_gas_price"
 httpObj2 := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 httpObj2.Open("GET", GAS_url)
@@ -17,7 +18,17 @@ pattern2 := "(\d+\.\d+(?=\sUSD/gal for Wk))"
 RegExMatch(response2, pattern2, result2)
 GAS := Trim(result2)
 
+; Code for scraping average oil price
+OIL_url := "https://ycharts.com/indicators/average_crude_oil_spot_price"
+httpObj3 := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+httpObj3.Open("GET", OIL_url)
+httpObj3.Send()
+response3 := httpObj3.ResponseText
+pattern3 := "(\d+\.\d+(?=\sUSD/bbl for ))"
+RegExMatch(response3, pattern3, result3)
+OIL := Trim(result3)
 
+; Code for scraping VIX
 VIX_url := "https://ycharts.com/indicators/vix_volatility_index"
 httpObj2 := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 httpObj2.Open("GET", VIX_url)
@@ -50,5 +61,5 @@ RegExMatch(VIX, "(\d+\.\d+)", VIXnum)
 RegExMatch(GAS, "(\d+\.\d+)", GASprc)
 ResourcesFolder := A_MyDocuments . "\DTraderTools\resources\"
 FileDelete, %ResourcesFolder%temp.txt
-FileAppend, %VIXnum%`n%PCRnum%`n%newsp500RelValue%`n%GASprc%, %ResourcesFolder%temp.txt
+FileAppend, %VIXnum%`n%PCRnum%`n%newsp500RelValue%`n%GASprc%`n%OIL%, %ResourcesFolder%temp.txt
 ExitApp
