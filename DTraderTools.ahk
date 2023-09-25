@@ -376,6 +376,10 @@ If !FileExist(ImageFolder)
 scrapeScriptPath := ResourcesFolder . "\scrape.ahk"
 scrapeScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/scrape.ahk" 
 
+; deletes existing scrape.ahk to update.... for temporary use to help with automatically updating
+If FileExist(scrapeScriptPath)
+	FileDelete, % scrapeScriptPath
+
 If !FileExist(scrapeScriptPath)
 	UrlDownloadToFile, % scrapeScriptURL, % scrapeScriptPath
 Run % scrapeScriptPath
