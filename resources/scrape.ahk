@@ -76,8 +76,8 @@ Loop, Parse, csvData, `n, `r
 Loop, Parse, csvData, `n, `r
 {
 	StringSplit, rowData, A_LoopField, `,
-	if (A_Index = 1)
-		BTC2 := rowData1
+	if (A_Index = 9)
+		BTC := rowData1
 	else if (A_Index = 9)
 	{
 		BTC := rowData1
