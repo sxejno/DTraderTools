@@ -17,7 +17,7 @@ global oilPrice := ""
 
 
 
-CV = 2.98
+CV = 2.99
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -27,6 +27,10 @@ LE = Last updated: %lastupdateddate%
 last_changes =
 	(
 	Here's what's new in version %CV%:
+	
+	* added image refresher to reloader in bottom right corner
+	
+	* changed thinkorswim logo color to blue for Schwab merger
 	
 	* added btc price near long/shorts
 	
@@ -833,7 +837,39 @@ if (AllImagesDownloaded) {
 	return
 	
 	refresh:
-	reload
+	MsgBox,35,Refresh,Click "Yes" to reload this program.`n`nClick "No" to refresh images.,3
+	IfMsgBox, Yes
+	{
+		reload
+	}
+	IfMsgBox, No
+	{
+		ImageFolder := A_MyDocuments . "\DTraderTools\resources\images"
+		ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "pump", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/pump.png"},{"Name": "btcrainbow", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/btcrainbow.png"},{"Name": "btcdaily", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/btcdaily.png"},{"Name": "oil", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/oil.png"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"},{"Name": "tru", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tru.png"},{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"},{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"},{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"},{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]
+		scrapeScriptPath := ResourcesFolder . "\scrape.ahk"
+		scrapeScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/scrape.ahk" 
+		DownloadImageScriptPath := ResourcesFolder . "\DownloadImage.ahk"
+		DownloadImageScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/DownloadImage.ahk" 
+		
+		; deletes existing scrape.ahk to update.... for temporary use to help with automatically updating
+		If FileExist(scrapeScriptPath)
+			FileDelete, % scrapeScriptPath
+		
+		If !FileExist(scrapeScriptPath)
+			UrlDownloadToFile, % scrapeScriptURL, % scrapeScriptPath
+		Run % scrapeScriptPath
+		
+		If !FileExist(DownloadImageScriptPath)
+			UrlDownloadToFile, % DownloadImageScriptURL, % DownloadImageScriptPath
+		
+		Loop, Files, %ImageFolder%\*.*
+		{
+			FileDelete, % A_LoopFileFullPath
+		}
+		CheckAndDownloadImages(ImageList, imageFolder)
+		sleep 2000
+		reload
+	}
 	return
 	
 	BTCDaily:
