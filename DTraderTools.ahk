@@ -869,6 +869,7 @@ if (AllImagesDownloaded) {
 		CheckAndDownloadImages(ImageList, imageFolder)
 		sleep 2000
 		reload
+		reload
 	}
 	return
 	
