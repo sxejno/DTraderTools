@@ -876,7 +876,6 @@ if (AllImagesDownloaded) {
 		CheckAndDownloadImages(ImageList, imageFolder)
 		sleep 2000
 		reload
-		reload
 	}
 	return
 	
@@ -1273,14 +1272,12 @@ if (AllImagesDownloaded) {
 	FetchAndUpdate:
 	try {
 		Run A_MyDocuments . "\DTraderTools\resources\scrape.ahk"
-		sleep 1000
 		VIXnum := "..."
 		PCRnum := "..."
 		BTC := ""
 		value200DMA := 
 		valueSP500 :=
 		sp500RelValue := "..."
-		sleep 1000
 		temppath := A_MyDocuments . "\DTraderTools\resources\temp.txt"
 		FileRead, fileContent, %temppath%
 		FileReadLine, VIXnum, %temppath%, 1
