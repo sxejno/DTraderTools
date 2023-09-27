@@ -73,13 +73,18 @@ last_changes =
 	INTRODUCING: Version 3 !
 	
 	🍁🍂 Fall 2023 Edition! 🎃🦃
+
+	* revamped and updated scrape.ahk helper
 	
-	* removed cryptowatch as it is now defunct
+	* fixed bug with btc not appearing sometimes
+
+	* removed cryptowatch as its website is now defunct
 	
-	* added image refresher to reloader in bottom right corner
+	* added image refresher to reloader in bottom right
+
+	* also scrape.ahk is updated when images are refreshed
 	
-	* made images easier to add/deal with in the codebase
-	
+	* also made images easier to add/deal with in the codebase
 	)
 
 
