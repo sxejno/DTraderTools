@@ -1,5 +1,7 @@
 # Shane's Trader Tools
-Shane's Trader Tools is an AutoHotKey script that provides a custom graphical user interface (GUI) with various buttons to access different financial websites and tools. It is designed to help traders quickly access essential resources for stock and option trading.
+Shane's Trader Tools is an AutoHotKey script that provides a custom graphical user interface (GUI) with various buttons to access different financial websites and tools.
+It is designed to help traders quickly access essential resources for stock and option trading.
+There is no warranty, expressed or implied.
 
 ### Features
 * Quick access to multiple financial websites and tools
@@ -11,35 +13,43 @@ Shane's Trader Tools is an AutoHotKey script that provides a custom graphical us
 2. Save the provided script as DTraderTools.ahk.
 3. Double-click the DTraderTools.ahk file to run the script.
 4. The Shane's Trader Tools GUI will appear, and you can start using the buttons to open various websites and tools.
+5. Some buttons may not work correctly if you lack the requisite software (for example, thinkorswim must be installed to use the ToS button).
 
 ### Buttons and Actions
 The script includes buttons to access the following websites and tools:
-
-* Fox Business Network (FBN)
+* "watched ticker" feature
+* Dollar Cost Average helper
+* Options Tracker spreadsheet
+* Options Profit Calculators
+* Dan Niles
+* Fox Business video stream (FBN)
 * thinkorswim trading platform (ToS)
 * Coinbase Pro (CB)
+* r/bitcoinmarkets Daily Discussion thread
+* BTC long/short ratio
+* BTC price updates in the GUI
 * CoinDesk (CD)
 * CNN Premarket
 * Google Finance (GF)
+* Stuff Recycling
 * Gold Price (GP)
 * Bloomberg TV (BTV)
+* MarketWatch economic calendar
 * OpenAI Chatbot (ChatGPT)
 * StockTwits (ST)
 * Finviz (FV)
 * TipRanks (TR)
+* Greeks checker for options
 * Update checker (STT)
 * TradingView
 * StockCharts
-* Open multiple websites in new tabs (ButtonOpenAll)
-* Dollar Cost Averaging Calculator(ButtonDollarCostAverage)
-* Options Tracker Google Sheet (ButtonOptionsTrackerSheet)
-* Options Profit Calculator (ButtonOptionsProfitCalculator)
-* StockRow (ButtonStockRow)
-* Bloomberg Live TV (ButtonBloombergLiveTV)
-* 200-day moving average PDF report (Button200DMA)
-* CME Group FedWatch Tool (ButtonFedWatch)
+* StockRow
+* 200-day moving average PDF report
+* CME Group FedWatch Tool
 * CME Group OPEC Watch Tool (ButtonOPECWatch)
 * Truflation (TRU)
+* BTC Rainbow chart
+* BTC point & figure chart
 
 ### Help and Support
 There is an option to "request a feature" and to "report a bug", if you click on "Shane's Trader Tools" on the bottom of the program.
