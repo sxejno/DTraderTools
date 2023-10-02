@@ -59,7 +59,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3
+CV = 3.01
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -70,7 +70,7 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	INTRODUCING: Version 3 !
+	INTRODUCING: Version 3.01 !
 	
 	🍁🍂 Fall 2023 Edition! 🎃🦃
 	
@@ -639,9 +639,9 @@ if (AllImagesDownloaded) {
 	site5 = https://thetvapp.to/tv/fox-business-network-live-stream/
 	;Run chrome.exe %site5% " --new-window "
 	;Run chrome.exe %site2% "--new-tab"
-	Run chrome.exe %site3% "--new-window"
+	;Run chrome.exe %site3% "--new-window"
 	;Run chrome.exe %site4% "--new-tab"
-	;Run chrome.exe %site5% "--new-tab"
+	Run chrome.exe %site5% "--new-tab"
 	return 
 	
 	ToS:
