@@ -59,7 +59,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.01
+CV = 3.02
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -70,23 +70,7 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	INTRODUCING: Version 3.01 !
-	
-	🍁🍂 Fall 2023 Edition! 🎃🦃
-	
-	* created functions from former labels
-
-	* revamped and updated scrape.ahk helper
-	
-	* fixed bug with btc not appearing sometimes
-
-	* removed cryptowatch; its website is now defunct
-	
-	* added image refresher to reloader in bottom right
-
-	* also scrape.ahk is updated when images are refreshed
-	
-	* also made images easier to add/deal with in the codebase
+	* program should now launch in center of primary screen
 	)
 
 
@@ -288,8 +272,28 @@ try {
 		BTC := AddCommas(BTC)
 	}
 	
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; snippet of code to help center up the launched GUI on main monitor
+	; Get screen dimensions of the primary monitor
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	SysGet, ScreenWidth, 0
+	SysGet, ScreenHeight, 1
+	
+	; Calculate center position for the GUI window
+	GuiWidth := 479 ; specify the width of your GUI
+	GuiHeight := 531 ; specify the height of your GUI
+	
+	CenterX := (ScreenWidth - GuiWidth) // 2
+	CenterY := (ScreenHeight - GuiHeight) // 2
+	
+	; Create and show the GUI (originally Generated using SmartGUI Creator 4.0)
+	Gui, Show, w%GuiWidth% h%GuiHeight% x%CenterX% y%CenterY%, Shane's Trader Tools v%CV%
+	
 	; Generated using SmartGUI Creator 4.0
-	Gui, Show, x878 y358 h531 w479, Shane's Trader Tools v%CV%
+	;Gui, Show, x878 y358 h531 w479, Shane's Trader Tools v%CV%
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	
 } catch {
 	Gui, Hide
@@ -582,8 +586,8 @@ Loop, % ImageList.MaxIndex() {
 if (AllImagesDownloaded) {
 	SetTimer, CheckImagesDownloaded, Off
 	Menu, Tray, Icon, % imgfavicon
-	Gui, Show, x878 y358 h531 w479, Shane's Trader Tools v%CV%
-	
+	;Gui, Show, x878 y358 h531 w479, Shane's Trader Tools v%CV%
+	Gui, Show, w%GuiWidth% h%GuiHeight% x%CenterX% y%CenterY%, Shane's Trader Tools v%CV%
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;     Helper to get version number to determine if update is needed     ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
