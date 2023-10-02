@@ -59,7 +59,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.02
+CV = 3.03
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -70,7 +70,7 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* program should now launch in center of primary screen
+	* program should now launch in center of primary screen (adjustable)
 	)
 
 
@@ -283,8 +283,12 @@ try {
 	GuiWidth := 479 ; specify the width of your GUI
 	GuiHeight := 531 ; specify the height of your GUI
 	
-	CenterX := (ScreenWidth - GuiWidth) // 2
-	CenterY := (ScreenHeight - GuiHeight) // 2
+	; Optional adjustments
+	AdjustX := 0 ; Adjustment for X-coordinate (can be negative)
+	AdjustY := -350 ; Adjustment for Y-coordinate (can be negative)
+	
+	CenterX := ((ScreenWidth - GuiWidth) // 2) + AdjustX
+	CenterY := ((ScreenHeight - GuiHeight) // 2) + AdjustY	
 	
 	; Create and show the GUI (originally Generated using SmartGUI Creator 4.0)
 	Gui, Show, w%GuiWidth% h%GuiHeight% x%CenterX% y%CenterY%, Shane's Trader Tools v%CV%
