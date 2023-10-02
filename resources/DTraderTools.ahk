@@ -8,7 +8,58 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; used because #NoEnv is used... this allows the script to get the user's local file path for AppData
 EnvGet, A_LocalAppData, LocalAppData
 
-CV = 2.9
+; Initialize a state variable
+global labelState := 1
+
+; Initialize hypothetical values for gas and oil prices
+global gasPrice := ""
+global oilPrice := ""
+global ResourcesFolder := A_MyDocuments . "\DTraderTools\resources"
+global ImageFolder := A_MyDocuments . "\DTraderTools\resources\images"
+global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"}
+,{"Name": "pump", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/pump.png"}
+,{"Name": "btcrainbow", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/btcrainbow.png"}
+,{"Name": "btcdaily", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/btcdaily.png"}
+,{"Name": "oil", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/oil.png"}
+,{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"}
+,{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"}
+,{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"}
+,{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"}
+,{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"}
+,{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"}
+,{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"}
+,{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"}
+,{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"}
+,{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"}
+,{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"}
+,{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"}
+,{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"}
+,{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"}
+,{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"}
+,{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"}
+,{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"}
+,{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"}
+,{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"}
+,{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"}
+,{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"}
+,{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"}
+,{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"}
+,{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"}
+,{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"}
+,{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"}
+,{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}
+,{"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"}
+,{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"}
+,{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"}
+,{"Name": "tru", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tru.png"}
+,{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"}
+,{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"}
+,{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"}
+,{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]	
+
+
+
+CV = 3.01
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -19,12 +70,23 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* added custom menu with 6 buttons
+	INTRODUCING: Version 3.01 !
 	
-	* added link for Dan Niles articles
+	🍁🍂 Fall 2023 Edition! 🎃🦃
 	
-	* fixed feature request / bug reporter
+	* created functions from former labels
+
+	* revamped and updated scrape.ahk helper
 	
+	* fixed bug with btc not appearing sometimes
+
+	* removed cryptowatch; its website is now defunct
+	
+	* added image refresher to reloader in bottom right
+
+	* also scrape.ahk is updated when images are refreshed
+	
+	* also made images easier to add/deal with in the codebase
 	)
 
 
@@ -38,7 +100,6 @@ If !FileExist(A_MyDocuments "\DTraderTools\config.ini"){
 	FileCreateDir, %A_MyDocuments%\DTraderTools\
 	IniWrite, 0, %A_MyDocuments%\DTraderTools\config.ini, info, version
 	IniWrite, 0, %A_MyDocuments%\DTraderTools\config.ini, info, times_used
-	;IniWrite, 0, %A_MyDocuments%\DTraderTools\config.ini, info, changes
 }
 
 IniRead, OutputVar, %A_MyDocuments%\DTraderTools\config.ini, info, version
@@ -46,8 +107,6 @@ If OutputVar != %CV%
 {
 	MsgBox,,Updates in version %CV%!, %last_changes%
 	IniWrite, %CV%, %A_MyDocuments%\DTraderTools\config.ini, info, version
-	IniDelete, %A_MyDocuments%\DTraderTools\config.ini, info, changes
-	;IniWrite, %last_changes%, %A_MyDocuments%\DTraderTools\config.ini, info, changes
 }
 
 ; # of times launched since version 2.0
@@ -86,7 +145,6 @@ else ; if watch is empty or not found in the config
 }
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;                                                                       ;
 ;                                   images                              ; 
@@ -114,11 +172,15 @@ imgSTT:= A_MyDocuments . "\DTraderTools\resources\images\sttlong.png"
 imgTF:= A_MyDocuments . "\DTraderTools\resources\images\tru.png"
 imgECAL:= A_MyDocuments . "\DTraderTools\resources\images\ecal.png"
 imgXO:= A_MyDocuments . "\DTraderTools\resources\images\xo.png"
+imgOIL:= A_MyDocuments . "\DTraderTools\resources\images\oil.png"
+imgPUMP:= A_MyDocuments . "\DTraderTools\resources\images\pump.png"
 imgOB:= A_MyDocuments . "\DTraderTools\resources\images\ob.png"
 imgcal:= A_MyDocuments . "\DTraderTools\resources\images\cal.png"
 imgcalc:= A_MyDocuments . "\DTraderTools\resources\images\calc.png"
 imghelp:= A_MyDocuments . "\DTraderTools\resources\images\help.png"
 imgrefresh:= A_MyDocuments . "\DTraderTools\resources\images\refresh.png"
+imgRAINBOW:= A_MyDocuments . "\DTraderTools\resources\images\btcrainbow.png"
+imgBTCD:= A_MyDocuments . "\DTraderTools\resources\images\btcdaily.png"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;     Account names for dropdownlist                                    ;
@@ -126,7 +188,7 @@ imgrefresh:= A_MyDocuments . "\DTraderTools\resources\images\refresh.png"
 
 accounts = 
 (
-Charles Schwab|TDAmeritrade|Nancy Barron|Edward Jones|Chase|Gemini|Kraken|cryptowatch
+Charles Schwab|TDAmeritrade|Fidelity|Nancy Barron|Edward Jones|Chase|Gemini|Kraken
 )
 
 ; Set tray icon
@@ -145,8 +207,9 @@ try {
 	Gui, Add, Button, x102 y114 w70 h20 , *Custom*
 	Gui, Add, Button, x302 y159 w70 h30 , StockCharts
 	Gui, Add, Button, x212 y159 w80 h30 , TradingView
-	Gui, Font, s8 cPurple Bold, Verdana
-	;Gui, Add, Text, x222 y3 w160 vPriceText, fetching price... 
+	Gui, Add, Link, x212 y209, <a href="https://www.coinglass.com/LongShortRatio">BTC Long-Short Ratio</a>
+	Gui, Font, s9 cPurple Bold, Verdana
+	Gui, Add, Text, x333 y209 vBTCprc w120 BackgroundTrans, get btc price...
 	Gui, Add, Text, x222 y3 w160 vPriceText gUpdateWatch BackgroundTrans, fetching price... 
 	Gui, Font,
 	Gui, Add, GroupBox, x192 y19 w260 h190, View Ticker on:
@@ -159,14 +222,16 @@ try {
 	Gui, Add, Picture, gECAL x380 y229 w60 h60 BackgroundTrans, %imgECAL%
 	Gui, Add, DropDownList, x112 y379 w130 h200 vAcct Choose1, %accounts%
 	Gui, Add, Picture, gFBN x42 y239 w100 h100 BackgroundTrans vPicFox, %imgFBN%
-	Gui, Add, Picture, gToS x32 y169 w50 h40 BackgroundTrans, %imgTOS%
-	Gui, Add, Picture, gCB x102 y159 w60 h60 BackgroundTrans, %imgCB%
+	Gui, Add, Picture, gToS x22 y169 w50 h40 BackgroundTrans, %imgTOS%
+	Gui, Add, Picture, gCB x82 y164 w50 h50 BackgroundTrans, %imgCB%
+	Gui, Add, Picture, gBTCDaily x142 y164 w50 h50 BackgroundTrans, %imgBTCD%
 	Gui, Add, Picture, gCD x162 y239 w100 h20 BackgroundTrans, %imgCD%
 	Gui, Add, Picture, gCNN x162 y269 w100 h30 BackgroundTrans, %imgCNN%
 	Gui, Add, Picture, gGF x162 y309 w100 h30 BackgroundTrans, %imgGF%
 	Gui, Add, Picture, gSR x272 y233 w100 h20 BackgroundTrans, %imgSR%
 	Gui, Add, Picture, gGP x272 y259 w100 h20 BackgroundTrans, %imgGP%
-	Gui, Add, Picture, gBTV x282 y289 w140 h50 BackgroundTrans, %imgBTV%
+	Gui, Add, Picture, gBTV x272 y289 w140 h50 BackgroundTrans, %imgBTV%
+	Gui, Add, Picture, gChatGPT x425 y319 w25 h25 BackgroundTrans, %imgChatGPT%
 	Gui, Add, Picture, gTR x352 y99 w90 h30 BackgroundTrans, %imgTR%
 	Gui, Add, Picture, gFV x202 y39 w80 h30 BackgroundTrans, %imgFV%
 	Gui, Add, Picture, gST x202 y89 w140 h50 BackgroundTrans, %imgST%
@@ -177,8 +242,6 @@ try {
 	Gui, Add, Button, x372 y369 w70 h20 , StockRow
 	Gui, Add, Button, x302 y369 w70 h20 , OPEC Watch
 	Gui, Add, Button, x302 y389 w70 h20 , FedWatch
-	;Gui, Add, Link,, This is a <a href="http://ahkscript.org">link</a>
-	;Gui, Add, Link,, Links may be used anywhere in the text like <a id="1">this</a> or <a id="2">that</a>
 	
 	; Add buttons above the help button
 	Gui, Add, Picture,gCalendar x22 y429 w64 h64 BackgroundTrans, %imgcal%
@@ -186,7 +249,7 @@ try {
 	Gui, Add, Picture,gCalc x182 y429 w64 h64 BackgroundTrans, %imgcalc%
 	
 	Gui, Add, Picture, gTF x290 y420 w126 h30 BackgroundTrans, %imgTF%
-	Gui, Add, Picture, gChatGPT x425 y425 w25 h25 BackgroundTrans, %imgChatGPT%
+	Gui, Add, Picture, gBTCRainbow x425 y425 w50 h25 BackgroundTrans, %imgRAINBOW%
 	Gui, Add, Picture, gXO x425 y450 w50 h50 BackgroundTrans, %imgXO%
 	; CODE 2 integration - gradient boxes
 	Gui, Add, Link, x290 y453, <a href="https://ycharts.com/indicators/vix_volatility_index">VIX</a>
@@ -200,8 +263,11 @@ try {
 	Gui, Add, Text, x340 y493 w30 vPutCall, % PCRnum
 	Gui, Add, Text, x390 y493 w30 vSP, % Round(SP) . "%"
 	
-	Gui, Font, s8 cGreen Bold, Verdana
+	
+	Gui, Font, s8 cBlack Bold, Verdana
 	Gui, Add, Text, x290 y510 w100 vGAS, % GASprc
+	
+	Gui, Add, Picture,vGasOil gOilGasTogglePrice x257 y498 w24 h24 BackgroundTrans, %imgPUMP%
 	
 	try {
 		VIXnum := "..."
@@ -210,11 +276,16 @@ try {
 		value200DMA := 
 		valueSP500 :=
 		sp500RelValue := "..."
+		BTC := ""
 		temppath := A_MyDocuments . "\DTraderTools\resources\temp.txt"
 		FileReadLine, VIXnum, %temppath%, 1
 		FileReadLine, PCRnum, %temppath%, 2
 		FileReadLine, SP, %temppath%, 3	
 		FileReadLine, GASprc, %temppath%, 4
+		FileReadLine, gasPrice, %temppath%, 4
+		FileReadLine, oilPrice, %temppath%, 5
+		FileReadLine, BTC, %temppath%, 6
+		BTC := AddCommas(BTC)
 	}
 	
 	; Generated using SmartGUI Creator 4.0
@@ -222,9 +293,8 @@ try {
 	
 } catch {
 	Gui, Hide
-	ImageFolder := A_MyDocuments . "\DTraderTools\resources\images"
-	ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"},{"Name": "tru", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tru.png"},{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"},{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"},{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"},{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]	
 	CheckAndDownloadImages(ImageList, imageFolder)
+	Sleep 100
 	Gui, Show
 }
 
@@ -274,6 +344,7 @@ if (backupsToKeep = "" || !IsNumber(backupsToKeep))
 	AskUserForBackupNumber()
 }
 
+; Function to ask the user for the number of backups to keep
 AskUserForBackupNumber()
 {
 	InputBox, backupsToKeep, Backups to keep, Please enter the number of backups to keep:
@@ -289,6 +360,7 @@ AskUserForBackupNumber()
 	}
 }
 
+; makes sure "number of backups to keep" is an actual number
 IsNumber(str)
 {
 	RegExMatch(str, "^\d+$", match)
@@ -301,7 +373,6 @@ IsNumber(str)
 		return true
 	}
 }
-
 
 ; Check if there is a new version available
 If (NV != CV) {
@@ -338,11 +409,6 @@ StartScript:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; Check and download missing images
-ResourcesFolder := A_MyDocuments . "\DTraderTools\resources"
-ImageFolder := A_MyDocuments . "\DTraderTools\resources\images"
-ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"},{"Name": "tru", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tru.png"},{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"},{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"},{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"},{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]	
-
-
 CheckAndDownloadImages(ImageList, imageFolder)
 
 ; Create the image folder if it doesn't exist
@@ -352,6 +418,10 @@ If !FileExist(ImageFolder)
 ; Download the scrape.ahk script if it doesn't exist in the resources folder
 scrapeScriptPath := ResourcesFolder . "\scrape.ahk"
 scrapeScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/scrape.ahk" 
+
+; deletes existing scrape.ahk to update.... for temporary use to help with automatically updating
+If FileExist(scrapeScriptPath)
+	FileDelete, % scrapeScriptPath
 
 If !FileExist(scrapeScriptPath)
 	UrlDownloadToFile, % scrapeScriptURL, % scrapeScriptPath
@@ -407,20 +477,20 @@ WatchImagesFolder() {
 
 ; Function to get VIX gradient image based on input VIX value
 GetVIXGradientImage(value) {
-	ImageFolder := A_MyDocuments . "\DTraderTools\resources\images\"
+	ImageFolderNEW := ImageFolder . "\"
 	vixThresholds := [13, 19, 28]
 	
 	if (value <= vixThresholds[2]) {
         ; Calculate the appropriate image between 100 (green) and 60 (yellow) based on the VIX value
 		relativeValue := (value - vixThresholds[1]) / (vixThresholds[2] - vixThresholds[1])
 		imageIndex := 100 - (40 * relativeValue)
-		return ImageFolder . Round(imageIndex / 10) * 10 . ".png" ; Round to the nearest multiple of 10
+		return ImageFolderNEW . Round(imageIndex / 10) * 10 . ".png" ; Round to the nearest multiple of 10
 	}
 	else if (value > vixThresholds[2] && value <= vixThresholds[3]) {
         ; Calculate the appropriate image between 60 (yellow) and 10 (red) based on the VIX value
 		relativeValue := (value - vixThresholds[2]) / (vixThresholds[3] - vixThresholds[2])
 		imageIndex := 60 - (50 * relativeValue)
-		return ImageFolder . Round(imageIndex / 10) * 10 . ".png" ; Round to the nearest multiple of 10
+		return ImageFolderNEW . Round(imageIndex / 10) * 10 . ".png" ; Round to the nearest multiple of 10
 	}
 	else {
         ; Calculate the appropriate image between 10 (red) and 1 (most red) based on the VIX value
@@ -428,12 +498,12 @@ GetVIXGradientImage(value) {
 		maxVIX := 100
 		relativeValue := (value - vixThresholds[3]) / (maxVIX - vixThresholds[3])
 		imageIndex := 10 - (9 * relativeValue)
-		return ImageFolder . Round(imageIndex / 10) * 10 . ".png" ; Limit the minimum index to 1 (most red)
+		return ImageFolderNEW . Round(imageIndex / 10) * 10 . ".png" ; Limit the minimum index to 1 (most red)
 	}
 }
 
 GetPCRGradientImage(value, reverse := false) {
-	ImageFolder := A_MyDocuments . "\DTraderTools\resources\images\"
+	ImageFolderNEW := ImageFolder . "\"
 	gradientRange := [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 	
     ; Determine the appropriate value for the gradient variable based on the put/call ratio
@@ -451,7 +521,7 @@ GetPCRGradientImage(value, reverse := false) {
 	
     ; Construct the file path for the appropriate gradient image
 	gradientFileName := gradientValue . ".png"
-	gradientFilePath := ImageFolder . gradientFileName
+	gradientFilePath := ImageFolderNEW . gradientFileName
 	
 	return gradientFilePath
 }
@@ -462,13 +532,13 @@ InterpolateValues(minValue, maxValue, ratio) {
 
 	; Function to get gradient image based on input value and thresholds
 GetGradientImage(value, thresholds, reverse := false) {
-	ImageFolder := A_MyDocuments . "\DTraderTools\resources\images\"
+	ImageFolderNEW := ImageFolder . "\"
 	for index, threshold in thresholds {
 		if (value <= threshold) {
 			if (reverse)
-				return ImageFolder . ((10 - index) * 10) . ".png"
+				return ImageFolderNEW . ((10 - index) * 10) . ".png"
 			else
-				return ImageFolder  . (index * 10) . ".png"
+				return ImageFolderNEW  . (index * 10) . ".png"
 		}
 	}
 	return reverse ? A_MyDocuments . "\DTraderTools\resources\images\10.png" : A_MyDocuments . "\DTraderTools\resources\images\100.png"
@@ -484,9 +554,6 @@ sp500_200DMA = value200DMA
 ;vixThresholds := [6, 12, 14, 16, 18, 20, 22, 24, 26]
 putCallThresholds := [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3]
 sp500RelThresholds := [-5, -2, -1, -0.5, 0, 1, 0.5, 2, 5]
-
-; Calculate the S&P 500 relationship to its 200 DMA
-; sp500RelValue := ((sp500CurrentValue - sp500_200DMA) / sp500_200DMA) * 100
 
 ; Get the gradient images for the values
 vixImage := 
@@ -538,6 +605,24 @@ if (AllImagesDownloaded) {
 ;     "Button" (Picture) Controls                                       ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	
+	; Function to navigate to a website
+	GoToWebsite(url, openInNewWindow)
+	{
+    ; Read the setting from config.ini file
+		IniRead, openInNewWindow, %A_MyDocuments%\DTraderTools\config.ini, Settings, OpenInNewWindow
+		
+		if (openInNewWindow = "true")  ; Open in new window
+		{
+			Run, chrome.exe %url% --new-window
+		}
+		else  ; Open in existing window
+		{
+			Run, chrome.exe %url%
+		}
+		return
+	}
+	
+	
 	FBN:
 	GuiControl, -Redraw, PicFox
 	GuiControl,, PicFox, %imgMaria%
@@ -552,11 +637,11 @@ if (AllImagesDownloaded) {
 	site3 = https://livenewsof.com/fox-news-live-stream/
 	site4 = https://planetnews.com/live/fox-news-stream.html
 	site5 = https://thetvapp.to/tv/fox-business-network-live-stream/
-	Run chrome.exe %site5% " --new-window "
+	;Run chrome.exe %site5% " --new-window "
 	;Run chrome.exe %site2% "--new-tab"
-	;Run chrome.exe %site3% "--new-tab"
+	;Run chrome.exe %site3% "--new-window"
 	;Run chrome.exe %site4% "--new-tab"
-	;Run chrome.exe %site5% "--new-tab"
+	Run chrome.exe %site5% "--new-tab"
 	return 
 	
 	ToS:
@@ -593,56 +678,99 @@ if (AllImagesDownloaded) {
 	return
 	
 	CB:
-	GuiControlGet, ticker
-	site = https://pro.coinbase.com/trade/BTC-USD
-	Run chrome.exe %site% " --new-window "
+	GoToWebsite("https://pro.coinbase.com/trade/BTC-USD", openInNewWindow)
 	return 
 	
 	CD:
-	GuiControlGet, ticker
-	site = https://www.coindesk.com/
-	Run chrome.exe %site% " --new-window "
-	return
+	GoToWebsite("https://www.coindesk.com/", openInNewWindow)
+	return 
 	
 	CNN:
-	GuiControlGet, ticker
-	site = https://www.cnn.com/business/markets/premarkets
-	Run chrome.exe %site% " --new-window "
+	GoToWebsite("https://www.cnn.com/business/markets/premarkets", openInNewWindow)
 	return
 	
 	GF:
-	GuiControlGet, ticker
-	site = https://www.google.com/finance/?hl=en
-	Run chrome.exe %site% " --new-window "
+	GoToWebsite("https://www.google.com/finance/?hl=en", openInNewWindow)
 	return
 	
-	/* ; old way 
-		SR:
-	; find python install dir hopefully...
-		RunWait, %ComSpec% /c where python > temp.txt,, hide
-		FileRead, PythonPath, temp.txt
-		FileDelete, temp.txt
-		if (PythonPath = "") 
-		{
-			MsgBox, No compatible version of Python was found. Please install Python 3.8 or later.
-			return
-		}
-		
-	; Download the stuff.pyw script if it doesn't exist in the resources folder
-		stuffScriptPath := ResourcesFolder "\stuff.pyw"
-		stuffScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/stuff.pyw" 
-		
-	; Download the stuff.pyw script anyway
-		UrlDownloadToFile, %stuffScriptURL%, %stuffScriptPath%
-		
-	;RunWait the Python script
-	;RunWait, %ComSpec% /c %PythonPath% %stuffScriptPath%
-		
-		RunWait, %stuffScriptPath%
-		if ErrorLevel != 0
-			MsgBox, The Python script encountered an error. Let Shane know.
-		return
-	*/
+	GP:
+	GoToWebsite("https://goldprice.org/", openInNewWindow)
+	return
+	
+	BTV:
+	GoToWebsite("https://www.bloomberg.com/live/us/btv", openInNewWindow)
+	return
+	
+	ChatGPT:
+	GoToWebsite("https://chat.openai.com/chat", openInNewWindow)
+	return
+	
+	BTCRainbow:
+	GoToWebsite("https://www.blockchaincenter.net/en/bitcoin-rainbow-chart/", openInNewWindow)
+	return
+	
+	XO:
+	GoToWebsite("https://stockcharts.com/freecharts/pnf.php?c=`%24BTCUSD,PGPADEYRNR[PA][D][F1!3!1.0!!0!20]", openInNewWindow)
+	return
+	
+	Calendar:
+	GoToWebsite("https://calendar.google.com", openInNewWindow)
+	return
+	
+	ST:
+	GuiControlGet, ticker
+	GoToWebsite("https://stocktwits.com/symbol/" . ticker, openInNewWindow)
+	return
+	
+	FV:
+	GuiControlGet, ticker
+	GoToWebsite("https://finviz.com/quote.ashx?t=" . ticker, openInNewWindow)
+	return
+	
+	TR:
+	GuiControlGet, ticker
+	GoToWebsite("https://www.tipranks.com/stocks/" . ticker, openInNewWindow)
+	return
+	
+	ButtonDanNiles:
+	GoToWebsite("https://www.danniles.com/articles", openInNewWindow)
+	return
+	
+	ButtonOptionsTrackerSheet:
+	GoToWebsite("https://docs.google.com/spreadsheets/d/1e75HlZs9G4v0jcpHkvtl4NiBjv_iJa7pvm4sMiF4qzM/", openInNewWindow)
+	return
+	
+	ButtonOptionsProfitCalculator:
+	MsgBox, 4,, Open UnusualWhales Option Profit Calculator?`n`n Pressing "No" will open the original options profit calculator.
+	IfMsgBox Yes
+		GoToWebsite("https://unusualwhales.com/options-profit-calculator", openInNewWindow)
+	Else
+		GoToWebsite("https://www.optionsprofitcalculator.com/", openInNewWindow)
+	return
+	
+	ButtonStockRow:
+	GoToWebsite("https://stockrow.com/", openInNewWindow)
+	return
+	
+	Button200DMA:
+	GoToWebsite("https://www.yardeni.com/pub/stmkt200dma.pdf", openInNewWindow)
+	return
+	
+	ButtonFedWatch:
+	GoToWebsite("https://www.cmegroup.com/trading/interest-rates/countdown-to-fomc.html", openInNewWindow)
+	return
+	
+	ButtonOPECWatch:
+	GoToWebsite("https://www.cmegroup.com/trading/energy/cme-opec-watch-tool.html", openInNewWindow)
+	return
+	
+	TF:
+	GoToWebsite("https://truflation.com", openInNewWindow)
+	return
+	
+	ECAL:
+	GoToWebsite("https://www.marketwatch.com/economy-politics/calendar", openInNewWindow)
+	return
 	
 	SR:
 	; find python install dir hopefully...
@@ -711,63 +839,20 @@ if (AllImagesDownloaded) {
 	}
 	return
 	
-	GP:
-	GuiControlGet, ticker
-	site = https://goldprice.org/
-	Run chrome.exe %site% " --new-window "
-	return
+	OilGasTogglePrice:
+    ; Toggle the state
+	labelState := !labelState
 	
-	BTV:
-	GuiControlGet, ticker
-	site = https://www.bloomberg.com/live/us/btv
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	ChatGPT:
-	GuiControlGet, ticker
-	site = https://chat.openai.com/chat
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	ST:
-	GuiControlGet, ticker
-	site = https://stocktwits.com/symbol/%ticker%
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	FV:
-	GuiControlGet, ticker
-	site = https://finviz.com/quote.ashx?t=%ticker%
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	TR:
-	GuiControlGet, ticker
-	site = https://www.tipranks.com/stocks/%ticker%
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	TF:
-	GuiControlGet, ticker
-	site = https://truflation.com
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	ECAL:
-	GuiControlGet, ticker
-	site = https://www.marketwatch.com/economy-politics/calendar
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	XO:
-	GuiControlGet, ticker
-	site = https://stockcharts.com/freecharts/pnf.php?c=`%24BTCUSD,PGPADEYRNR[PA][D][F1!3!1.0!!0!20]
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	Calendar:
-	site = https://calendar.google.com
-	Run chrome.exe %site% " --new-window "
+    ; Update label and color based on the state
+	if (labelState) {
+		GuiControl,,GasOil, %imgPUMP%
+		GuiControl,, GAS, $%GASprc% gal/gas
+		GuiControl, +cRed, GAS
+	} else {
+		GuiControl,,GasOil, %imgOIL%
+		GuiControl,, GAS, $%oilPrice% bbl/oil
+		GuiControl, +cGreen, GAS
+	}
 	return
 	
 	Calc:
@@ -775,7 +860,74 @@ if (AllImagesDownloaded) {
 	return
 	
 	refresh:
-	reload
+	MsgBox,35,Refresh,Click "Yes" to reload this program.`n`nClick "No" to refresh images.,3
+	IfMsgBox, Yes
+	{
+		reload
+	}
+	IfMsgBox, No
+	{
+		;ImageFolder := A_MyDocuments . "\DTraderTools\resources\images"
+		;ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "pump", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/pump.png"},{"Name": "btcrainbow", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/btcrainbow.png"},{"Name": "btcdaily", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/btcdaily.png"},{"Name": "oil", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/oil.png"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"},{"Name": "tru", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tru.png"},{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"},{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"},{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"},{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]
+		scrapeScriptPath := ResourcesFolder . "\scrape.ahk"
+		scrapeScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/scrape.ahk" 
+		DownloadImageScriptPath := ResourcesFolder . "\DownloadImage.ahk"
+		DownloadImageScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/DownloadImage.ahk" 
+		
+		; deletes existing scrape.ahk to update.... for temporary use to help with automatically updating
+		If FileExist(scrapeScriptPath)
+			FileDelete, % scrapeScriptPath
+		
+		If !FileExist(scrapeScriptPath)
+			UrlDownloadToFile, % scrapeScriptURL, % scrapeScriptPath
+		Run % scrapeScriptPath
+		
+		If !FileExist(DownloadImageScriptPath)
+			UrlDownloadToFile, % DownloadImageScriptURL, % DownloadImageScriptPath
+		
+		Loop, Files, %ImageFolder%\*.*
+		{
+			FileDelete, % A_LoopFileFullPath
+		}
+		CheckAndDownloadImages(ImageList, imageFolder)
+		sleep 2000
+		reload
+	}
+	return
+	
+	BTCDaily:
+	; Get the current date and day of the week
+	FormatTime, CurrentDate,, dddd, MMMM d, yyyy
+	; Define your basic search query
+	BasicSearchQuery := "! site:https://www.reddit.com/r/BitcoinMarkets/ Daily Discussion"
+	; Append the date to the search query
+	FinalSearchQuery := BasicSearchQuery . " " . CurrentDate
+	; Encode the search query for use in a URL
+	URLSearchQuery := URLEncode(FinalSearchQuery)
+	; Create the full DuckDuckGo search URL
+	DuckDuckGoURL := "https://duckduckgo.com/?q=" . URLSearchQuery
+	; Navigate to the DuckDuckGo search URL
+	Run chrome.exe %DuckDuckGoURL% " --new-window "
+	; URLEncode function to percent-encode a string for URL use
+	URLEncode(s)
+	{
+		o := ""
+		Loop, Parse, s
+		{
+			i := Asc(A_LoopField)
+			if (i >= 0x30 and i <= 0x39) ; 0-9
+            || (i >= 0x41 and i <= 0x5A) ; A-Z
+            || (i >= 0x61 and i <= 0x7A) ; a-z
+            || i = 0x2D ; -
+            || i = 0x2E ; .
+            || i = 0x5F ; _
+            || i = 0x7E ; ~
+				o .= A_LoopField
+			Else
+				o .= "%" . Format("{:02X}", i)
+		}
+		return o
+	}
 	return
 	
 	OB:
@@ -905,10 +1057,6 @@ if (AllImagesDownloaded) {
 		}
 	}
 	
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;     Button controls                                                   ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	
 	Buttongreeks:
 	GuiControlGet, ticker
 	site = https://www.barchart.com/stocks/quotes/%ticker%/volatility-greeks
@@ -925,53 +1073,30 @@ if (AllImagesDownloaded) {
 	
 	ButtonTradingView:
 	GuiControlGet, ticker
-	site = https://www.tradingview.com/chart/?symbol=%ticker%
-	Run chrome.exe %site% " --new-window "
+	GoToWebsite("https://www.tradingview.com/chart/?symbol=" . ticker, openInNewWindow)
 	return
 	
 	ButtonStockCharts:
 	GuiControlGet, ticker
-	site = https://stockcharts.com/h-sc/ui?s=%ticker%
-	Run chrome.exe %site% " --new-window "
+	GoToWebsite("https://stockcharts.com/h-sc/ui?s=" . ticker, openInNewWindow)
 	return
 	
 	ButtonOpenAll:
-	Run chrome.exe "https://schwab.com/" " --new-window "
 	GuiControlGet, ticker
-	site = https://www.barchart.com/stocks/quotes/%ticker%/volatility-greeks
-	Sleep 250
-	Run chrome.exe %site% " --new-tab "
-	site2 = https://stocktwits.com/symbol/%ticker%
-	Sleep 250
-	Run chrome.exe %site2% " --new-tab "
-	site3 = https://www.tipranks.com/stocks/%ticker%
-	Sleep 250
-	Run chrome.exe %site3% " --new-tab "
-	site4 = https://finviz.com/quote.ashx?t=%ticker%
-	Sleep 250
-	Run chrome.exe %site4% " --new-tab "
+	GoToWebsite("https://schwab.com/", openInNewWindow)
+	Sleep 200
+	GoToWebsite("https://www.barchart.com/stocks/quotes/" . ticker . "/volatility-greeks", openInNewWindow)
+	Sleep 200
+	GoToWebsite("https://stocktwits.com/symbol/" . ticker, openInNewWindow)
+	Sleep 200
+	GoToWebsite("https://www.tipranks.com/stocks/" . ticker, openInNewWindow)
+	Sleep 200
+	GoToWebsite("https://finviz.com/quote.ashx?t=" . ticker, openInNewWindow)
 	return
 	
 	ButtonDollarCostAverage:
-	GuiControlGet, ticker
-	site = https://percentagetools.com/dollar-cost-average-calculator/
-	Run chrome.exe %site% " --new-window "
+	GoToWebsite("https://percentagetools.com/dollar-cost-average-calculator/", openInNewWindow)
 	return
-	
-	ButtonDanNiles:
-	GuiControlGet, ticker
-	site = https://www.danniles.com/articles
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	ButtonOptionsTrackerSheet:
-	GuiControlGet, ticker
-	site = https://docs.google.com/spreadsheets/d/1e75HlZs9G4v0jcpHkvtl4NiBjv_iJa7pvm4sMiF4qzM/
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	
-	
 	
 	Button*Custom*:
 	; Load existing button configuration from .ini file
@@ -1066,49 +1191,6 @@ if (AllImagesDownloaded) {
 		IniWrite, %new_name%, config.ini, Buttons, button%button_number%_name
 		IniWrite, %new_url%, config.ini, Buttons, button%button_number%_url
 	}
-	return
-	
-	
-	
-	ButtonOptionsProfitCalculator:
-	GuiControlGet, ticker
-	site = https://www.optionsprofitcalculator.com/
-	site2 = https://unusualwhales.com/options-profit-calculator
-	MsgBox, 4,, Open UnusualWhales Option Profit Calculator?`n`n Pressing "No" will open the original options profit calculator.
-	IfMsgBox Yes
-		Run chrome.exe %site2% " --new-window "
-	Else
-		Run chrome.exe %site% " --new-window "
-	return
-	
-	ButtonStockRow:
-	GuiControlGet, ticker
-	site = https://stockrow.com/
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	ButtonBloombergLiveTV:
-	GuiControlGet, ticker
-	site = https://www.bloomberg.com/live/us/btv
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	Button200DMA:
-	GuiControlGet, ticker
-	site = https://www.yardeni.com/pub/stmkt200dma.pdf
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	ButtonFedWatch:
-	GuiControlGet, ticker
-	site = https://www.cmegroup.com/trading/interest-rates/countdown-to-fomc.html
-	Run chrome.exe %site% " --new-window "
-	return
-	
-	ButtonOPECWatch:
-	GuiControlGet, ticker
-	site = https://www.cmegroup.com/trading/energy/cme-opec-watch-tool.html
-	Run chrome.exe %site% " --new-window "
 	return	
 	
 	help:
@@ -1118,21 +1200,21 @@ if (AllImagesDownloaded) {
 	ButtonGo:
 	Gui,Submit,NoHide
 	If Acct = Charles Schwab
-		Run "https://client.schwab.com/clientapps/accounts/summary/"
+		GoToWebsite("https://client.schwab.com/clientapps/accounts/summary/", openInNewWindow)
 	If Acct = TDAmeritrade
-		Run "https://www.tdameritrade.com/"
+		GoToWebsite("https://www.tdameritrade.com/", openInNewWindow)
+	If Acct = Fidelity
+		GoToWebsite("https://www.fidelity.com/", openInNewWindow)
 	If Acct = Nancy Barron
-		Run "https://www.mystreetscape.com/login/access/investor-index.html"
+		GoToWebsite("https://www.mystreetscape.com/login/access/investor-index.html", openInNewWindow)
 	If Acct = Edward Jones
-		Run "https://edwardjones.com/"
+		GoToWebsite("https://edwardjones.com/", openInNewWindow)
 	If Acct = Chase
-		Run "https://chase.com"
+		GoToWebsite("https://chase.com", openInNewWindow)
 	If Acct = Gemini
-		Run "https://gemini.com"
+		GoToWebsite("https://gemini.com", openInNewWindow)
 	If Acct = Kraken
-		Run "https://kraken.com"
-	If Acct = cryptowatch
-		Run "https://cryptowat.ch/"
+		GoToWebsite("https://kraken.com", openInNewWindow)
 	return
 	
 	GuiClose:
@@ -1140,9 +1222,10 @@ if (AllImagesDownloaded) {
 	
 	FetchAndUpdate:
 	try {
-		sleep 100
+		Run A_MyDocuments . "\DTraderTools\resources\scrape.ahk"
 		VIXnum := "..."
 		PCRnum := "..."
+		BTC := ""
 		value200DMA := 
 		valueSP500 :=
 		sp500RelValue := "..."
@@ -1152,6 +1235,7 @@ if (AllImagesDownloaded) {
 		FileReadLine, PCRnum, %temppath%, 2
 		FileReadLine, SP, %temppath%, 3
 		FileReadLine, GASprc, %temppath%, 4
+		FileReadLine, BTC, %temppath%, 6
 	}
 	
 	
@@ -1170,6 +1254,8 @@ if (AllImagesDownloaded) {
 	GuiControl,, PutCallpic, %putCallImage%
 	GuiControl,, SPpic, %sp500RelImage%
 	GuiControl,, GAS, $%GASprc% gas
+	BTC := AddCommas(BTC)
+	GuiControl,, BTCprc, BTC: $%BTC%
 	
 	; Stop the timer after updating the GUI text
 	SetTimer, FetchAndUpdate, Off
@@ -1183,13 +1269,39 @@ if (AllImagesDownloaded) {
 	if (ErrorLevel = 0) ; Check if user pressed OK in the input box
 	{
 		newwatch := userInput
-		watch := newwatch
+		StringUpper,UPPERnewwatch,newwatch
+		watch := UPPERnewwatch
 		IniWrite, %newwatch%, %A_MyDocuments%\DTraderTools\config.ini, settings, watched_ticker
 	;GuiControl,, PriceText
 		GuiControl,, x222 y3 vPriceText
 		FetchPrice()
 	}
 	return
+	
+	;work in progress - second watched ticker
+	/*	
+		UpdateWatch2:
+		global watch
+    ; Show input box to update the variable
+		InputBox, userInput, Update 2nd Watched Ticker, Enter a ticker to watch:
+    ; Update the variable and the GUI text element
+		if (ErrorLevel = 0) ; Check if user pressed OK in the input box
+		{
+			newwatch2 := userInput
+			StringUpper,UPPERnewwatch2,newwatch2
+			watch2 := UPPERnewwatch2
+			IniWrite, %newwatch2%, %A_MyDocuments%\DTraderTools\config.ini, settings, watched_ticker_2
+	;GuiControl,, PriceText
+			GuiControl,, x222 y3 vPriceText
+			FetchPrice()
+		}
+		return
+	*/
+	
+	; Function to add commas to a number
+	AddCommas(x, s=",") {
+		return RegExReplace(x, "\G\d+?(?=(\d{3})+(?:\D|$))", "$0" s)
+	}
 	
 	FetchPrice() {
 		global watch
