@@ -284,8 +284,8 @@ try {
 	GuiHeight := 531 ; specify the height of your GUI
 	
 	; Optional adjustments
-	AdjustX := 0 ; Adjustment for X-coordinate (can be negative)
-	AdjustY := -350 ; Adjustment for Y-coordinate (can be negative)
+	AdjustX := -125 ; Adjustment for X-coordinate (can be negative)
+	AdjustY := -125 ; Adjustment for Y-coordinate (can be negative)
 	
 	CenterX := ((ScreenWidth - GuiWidth) // 2) + AdjustX
 	CenterY := ((ScreenHeight - GuiHeight) // 2) + AdjustY	
