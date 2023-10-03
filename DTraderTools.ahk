@@ -59,7 +59,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.03
+CV = 3.1
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -70,7 +70,11 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* program should now launch in center of primary screen (adjustable)
+	* added config editor (access it by clicking ⓘ)
+	
+	* program should now launch in center of primary screen
+	
+	* lauch position can be adjusted with config/config editor
 	)
 
 
@@ -276,6 +280,11 @@ try {
 	; snippet of code to help center up the launched GUI on main monitor
 	; Get screen dimensions of the primary monitor
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; Read settings from config.ini
+	IniRead, AdjustX, config.ini, GUI, AdjustX, 0 ; Default to 0 if not found
+	IniRead, AdjustY, config.ini, GUI, AdjustY, 0 ; Default to 0 if not found
+	
+	; Get screen dimensions of the primary monitor
 	SysGet, ScreenWidth, 0
 	SysGet, ScreenHeight, 1
 	
@@ -284,8 +293,10 @@ try {
 	GuiHeight := 531 ; specify the height of your GUI
 	
 	; Optional adjustments
-	AdjustX := -125 ; Adjustment for X-coordinate (can be negative)
-	AdjustY := -125 ; Adjustment for Y-coordinate (can be negative)
+	; Convert to integers
+	AdjustX := AdjustX + 0
+	AdjustY := AdjustY + 0
+	
 	
 	CenterX := ((ScreenWidth - GuiWidth) // 2) + AdjustX
 	CenterY := ((ScreenHeight - GuiHeight) // 2) + AdjustY	
@@ -442,6 +453,13 @@ DownloadImageScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools
 
 If !FileExist(DownloadImageScriptPath)
 	UrlDownloadToFile, % DownloadImageScriptURL, % DownloadImageScriptPath
+
+; Download the edit_config.ahk script if it doesn't exist in the resources folder
+EditConfigScriptPath := ResourcesFolder . "\edit_config.ahk"
+EditConfigScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/edit_config.ahk" 
+
+If !FileExist(EditConfigScriptPath)
+	UrlDownloadToFile, % EditConfigScriptURL, % EditConfigScriptPath
 
 ; Create an object to store missing images
 MissingImages := {}
@@ -1202,7 +1220,16 @@ if (AllImagesDownloaded) {
 	return	
 	
 	help:
-	MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, assume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
+	MsgBox,67,Info/Config,View info? [click Yes]`n`nView/Edit configuration? [click No],2
+	IfMsgBox, Yes
+	{
+		MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, assume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
+	}
+	IfMsgBox, No
+	{
+		Run % EditConfigScriptPath
+	}
+	;MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, assume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
 	return
 	
 	ButtonGo:
