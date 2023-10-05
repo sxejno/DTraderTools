@@ -59,7 +59,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.1
+CV = 3.2
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -70,11 +70,15 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* added config editor (access it by clicking ⓘ)
+	* enhanced "help" menu by clicking ⓘ
+	
+	* custom 6-buttons now opens to right of main GUI
+	
+	* added config file editor, reached via new help menu
 	
 	* program should now launch in center of primary screen
 	
-	* lauch position can be adjusted with config/config editor
+	* launch position can be adjusted with config/config editor
 	)
 
 
@@ -315,6 +319,8 @@ try {
 	CheckAndDownloadImages(ImageList, imageFolder)
 	Sleep 100
 	Gui, Show
+	; Make the first unnamed GUI the last found window
+	Gui, +LastFound
 }
 
 
@@ -609,7 +615,14 @@ if (AllImagesDownloaded) {
 	SetTimer, CheckImagesDownloaded, Off
 	Menu, Tray, Icon, % imgfavicon
 	;Gui, Show, x878 y358 h531 w479, Shane's Trader Tools v%CV%
-	Gui, Show, w%GuiWidth% h%GuiHeight% x%CenterX% y%CenterY%, Shane's Trader Tools v%CV%
+	Try
+	{
+		Gui, Show, w%GuiWidth% h%GuiHeight% x%CenterX% y%CenterY%, Shane's Trader Tools v%CV%
+	}
+	Catch
+	{
+		Gui, Show
+	}
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;     Helper to get version number to determine if update is needed     ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -893,31 +906,7 @@ if (AllImagesDownloaded) {
 	}
 	IfMsgBox, No
 	{
-		;ImageFolder := A_MyDocuments . "\DTraderTools\resources\images"
-		;ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/favicon.ico"},{"Name": "pump", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/pump.png"},{"Name": "btcrainbow", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/btcrainbow.png"},{"Name": "btcdaily", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/btcdaily.png"},{"Name": "oil", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/oil.png"},{"Name": "maria", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/maria.png"},{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"},{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"},{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"},{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"},{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"},{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"},{"Name": "goldprice", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/goldprice.png"},{"Name": "stocktwits", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stocktwits.png"},{"Name": "finviz", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/finviz.png"},{"Name": "greeks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/greeks.png"},{"Name": "tipranks", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tipranks.png"},{"Name": "bbtv", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/bbtv.png"},{"Name": "gpt", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gpt.png"},{"Name": "sttlong", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/sttlong.png"},{"Name": "help", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/help.png"},{"Name": "kasstrans", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kasstrans.png"},{"Name": "10", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/10.png"},{"Name": "20", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/20.png"},{"Name": "30", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/30.png"},{"Name": "40", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/40.png"},{"Name": "50", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/50.png"},{"Name": "60", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/60.png"},{"Name": "70", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/70.png"},{"Name": "80", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/80.png"},{"Name": "90", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/90.png"},{"Name": "100", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/100.png"}, {"Name": "ob", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ob.png"},{"Name": "cal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cal.png"},{"Name": "calc", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/calc.png"},{"Name": "tru", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/tru.png"},{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"},{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"},{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"},{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]
-		scrapeScriptPath := ResourcesFolder . "\scrape.ahk"
-		scrapeScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/scrape.ahk" 
-		DownloadImageScriptPath := ResourcesFolder . "\DownloadImage.ahk"
-		DownloadImageScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/DownloadImage.ahk" 
-		
-		; deletes existing scrape.ahk to update.... for temporary use to help with automatically updating
-		If FileExist(scrapeScriptPath)
-			FileDelete, % scrapeScriptPath
-		
-		If !FileExist(scrapeScriptPath)
-			UrlDownloadToFile, % scrapeScriptURL, % scrapeScriptPath
-		Run % scrapeScriptPath
-		
-		If !FileExist(DownloadImageScriptPath)
-			UrlDownloadToFile, % DownloadImageScriptURL, % DownloadImageScriptPath
-		
-		Loop, Files, %ImageFolder%\*.*
-		{
-			FileDelete, % A_LoopFileFullPath
-		}
-		CheckAndDownloadImages(ImageList, imageFolder)
-		sleep 2000
-		reload
+		ReloadResources()
 	}
 	return
 	
@@ -1150,7 +1139,13 @@ if (AllImagesDownloaded) {
 		yPos += 50
 	}
 	
-	Gui, 2:Show, w280 h320, 6 Editable Buttons
+	; Get the position and size of the unnamed GUI
+	WinGetPos, x, y, w, h
+    ; Calculate the x-position for the HelpGui based on unnamed GUI's x-position and width
+	new_x := x + w + 20
+	new_y := y + 0
+	
+	Gui, 2:Show,x%new_x% y%new_y% w280 h320, 6 Editable Buttons
 	Return
 	
 ; Button Functions
@@ -1219,18 +1214,76 @@ if (AllImagesDownloaded) {
 	}
 	return	
 	
-	help:
-	MsgBox,67,Info/Config,View info? [click Yes]`n`nView/Edit configuration? [click No],2
-	IfMsgBox, Yes
-	{
-		MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, assume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
-	}
-	IfMsgBox, No
-	{
-		Run % EditConfigScriptPath
-	}
+	/*
+		help:
+		MsgBox,67,Info/Config,View info? [click Yes]`n`nView/Edit configuration? [click No],2
+		IfMsgBox, Yes
+		{
+			MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, assume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
+		}
+		IfMsgBox, No
+		{
+			Run % EditConfigScriptPath
+		}
 	;MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, assume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc
-	return
+		return
+	*/
+	
+	; Help button clicked
+	Help:
+	; Get the position and size of the unnamed GUI
+	WinGetPos, x, y, w, h
+    ; Calculate the x-position for the HelpGui based on unnamed GUI's x-position and width
+	new_x := x + w + 20
+	new_y := y + 360
+    ; Create a new GUI for help options
+	Gui, 3:New, , ⓘ
+	Gui, 3:Add, Button, x12 y9 w160 h30 gShowInfo, Show "About" Info
+	Gui, 3:Add, Button, x12 y49 w160 h30 gEditConfig, View/Edit Config File
+	Gui, 3:Add, Button, x12 y89 w160 h30 gRefresh2, Reload Shane'sTraderTools
+	Gui, 3:Add, Button, x12 y169 w70 h50 gRBug, Report a BUG!
+	Gui, 3:Add, Button, x92 y169 w80 h50 gRFeat, Request a FEATURE!
+	Gui, 3:Add, Button, x12 y129 w160 h30 gReloadRsc, Reload Resources
+	Gui, 3:Show, x%new_x% y%new_y% h231 w186, ⓘ
+	Return
+	
+; Show info button clicked
+	ShowInfo:
+	Gui, 3:Destroy
+	MsgBox,,Shane's Trader Tools v%CV% - about, Shane's Trader Tools was originally created on April 4th, 2022 as a collection of tools that may be helpful for stock/option trading. `n`nThe author of this software accepts no responsibility for damages `nresulting from the use of this product and makes no warranty or representation, either express or implied, including but not limited to, any implied warranty of merchantability or fitness for a particular purpose.`n`nThis software is provided "AS IS", and you, its user, assume all risks when using it.`n`nYou have opened this program: %current_count% times`n`nCurrent Version: %CV%`n`n%LE% `n`n%last_changes%`n`n`n          © 2022-2023 Kassandra, LLC                   https://kassandra.llc	
+	Return
+	
+; edit config
+	EditConfig:
+	Gui, 3:Destroy
+	Run % EditConfigScriptPath
+	Return
+	
+	; triggers reloadresources function
+	ReloadRsc:
+	ReloadResources()
+	Return
+	
+	RBug:
+	MsgBox, 4, Bug Reporting, Want to REPORT A BUG?
+	IfMsgBox Yes
+		Run, https://forms.gle/Apubmtc1cmbhpSu59
+	else IfMsgBox No
+		return
+	Return
+	
+	RFeat:
+	MsgBox, 4, Feature Request, Want to REQUEST A FEATURE?
+	IfMsgBox Yes
+		Run, https://forms.gle/Apubmtc1cmbhpSu59
+	else IfMsgBox No
+		return
+	Return
+	
+; Refresh button clicked
+	Refresh2:
+	reload
+	Return
 	
 	ButtonGo:
 	Gui,Submit,NoHide
@@ -1336,6 +1389,33 @@ if (AllImagesDownloaded) {
 	; Function to add commas to a number
 	AddCommas(x, s=",") {
 		return RegExReplace(x, "\G\d+?(?=(\d{3})+(?:\D|$))", "$0" s)
+	}
+	
+	ReloadResources()
+	{
+		scrapeScriptPath := ResourcesFolder . "\scrape.ahk"
+		scrapeScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/scrape.ahk" 
+		DownloadImageScriptPath := ResourcesFolder . "\DownloadImage.ahk"
+		DownloadImageScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/DownloadImage.ahk" 
+		
+		; deletes existing scrape.ahk to update.... for temporary use to help with automatically updating
+		If FileExist(scrapeScriptPath)
+			FileDelete, % scrapeScriptPath
+		
+		If !FileExist(scrapeScriptPath)
+			UrlDownloadToFile, % scrapeScriptURL, % scrapeScriptPath
+		Run % scrapeScriptPath
+		
+		If !FileExist(DownloadImageScriptPath)
+			UrlDownloadToFile, % DownloadImageScriptURL, % DownloadImageScriptPath
+		
+		Loop, Files, %ImageFolder%\*.*
+		{
+			FileDelete, % A_LoopFileFullPath
+		}
+		CheckAndDownloadImages(ImageList, imageFolder)
+		sleep 2000
+		reload
 	}
 	
 	FetchPrice() {
