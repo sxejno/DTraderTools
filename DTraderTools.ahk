@@ -11,6 +11,8 @@ EnvGet, A_LocalAppData, LocalAppData
 ; Initialize a state variable
 global labelState := 1
 
+global WBaX
+
 ; Initialize hypothetical values for gas and oil prices
 global gasPrice := ""
 global oilPrice := ""
@@ -55,11 +57,12 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 ,{"Name": "ecal", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ecal.png"}
 ,{"Name": "xo", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/xo.png"}
 ,{"Name": "stuff", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/stuff.png"}
-,{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}]	
+,{"Name": "refresh", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/refresh.png"}
+,{"Name": "futures", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/futures.png"}]	
 
 
 
-CV = 3.2
+CV = 3.25
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -70,7 +73,13 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* enhanced "help" menu by clicking ⓘ
+	* see enhanced "help" menu by clicking ⓘ
+	
+	* resized icons for better space efficiency
+	
+	* added futures (updates to this on roadmap)
+	
+	* Econ Calendar and BTC P&F chart now open in GUI
 	
 	* custom 6-buttons now opens to right of main GUI
 	
@@ -92,6 +101,8 @@ If !FileExist(A_MyDocuments "\DTraderTools\config.ini"){
 	FileCreateDir, %A_MyDocuments%\DTraderTools\
 	IniWrite, 0, %A_MyDocuments%\DTraderTools\config.ini, info, version
 	IniWrite, 0, %A_MyDocuments%\DTraderTools\config.ini, info, times_used
+	IniWrite, 0, %A_MyDocuments%\DTraderTools\config.ini, GUI, AdjustX
+	IniWrite, 0, %A_MyDocuments%\DTraderTools\config.ini, GUI, AdjustY
 }
 
 IniRead, OutputVar, %A_MyDocuments%\DTraderTools\config.ini, info, version
@@ -142,6 +153,7 @@ else ; if watch is empty or not found in the config
 ;                                   images                              ; 
 ;                                                                       ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; futures icon courtesy of Parzival’ 1997
 
 imgfavicon:= A_MyDocuments . "\DTraderTools\resources\images\favicon.ico"
 imgKASSTRANS:= A_MyDocuments . "\DTraderTools\resources\images\kasstrans.png"
@@ -173,6 +185,7 @@ imghelp:= A_MyDocuments . "\DTraderTools\resources\images\help.png"
 imgrefresh:= A_MyDocuments . "\DTraderTools\resources\images\refresh.png"
 imgRAINBOW:= A_MyDocuments . "\DTraderTools\resources\images\btcrainbow.png"
 imgBTCD:= A_MyDocuments . "\DTraderTools\resources\images\btcdaily.png"
+imgFUTURES:= A_MyDocuments . "\DTraderTools\resources\images\futures.png"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;     Account names for dropdownlist                                    ;
@@ -236,9 +249,12 @@ try {
 	Gui, Add, Button, x302 y389 w70 h20 , FedWatch
 	
 	; Add buttons above the help button
-	Gui, Add, Picture,gCalendar x22 y429 w64 h64 BackgroundTrans, %imgcal%
-	Gui, Add, Picture,gOB x122 y432 w31 h49 BackgroundTrans, %imgOB%
-	Gui, Add, Picture,gCalc x182 y429 w64 h64 BackgroundTrans, %imgcalc%
+	Gui, Add, Picture,gCalendar x22 y436 w40 h40 BackgroundTrans, %imgcal%
+	Gui, Add, Picture,gOB x82 y432 w31 h49 BackgroundTrans, %imgOB%
+	Gui, Add, Picture,gCalc x131 y436 w40 h40 BackgroundTrans, %imgcalc%
+	Gui, Add, Picture,gFutures x191 y426 w64 h64 BackgroundTrans, %imgFUTURES%
+	
+	
 	
 	Gui, Add, Picture, gTF x290 y420 w126 h30 BackgroundTrans, %imgTF%
 	Gui, Add, Picture, gBTCRainbow x425 y425 w50 h25 BackgroundTrans, %imgRAINBOW%
@@ -260,6 +276,7 @@ try {
 	Gui, Add, Text, x290 y510 w100 vGAS, % GASprc
 	
 	Gui, Add, Picture,vGasOil gOilGasTogglePrice x257 y498 w24 h24 BackgroundTrans, %imgPUMP%
+	
 	
 	try {
 		VIXnum := "..."
@@ -745,12 +762,25 @@ if (AllImagesDownloaded) {
 	return
 	
 	BTCRainbow:
-	GoToWebsite("https://www.blockchaincenter.net/en/bitcoin-rainbow-chart/", openInNewWindow)
+	site = https://www.blockchaincenter.net/en/bitcoin-rainbow-chart/
+	title = BTC Rainbow Chart
+	GoToWebsite(site, openInNewWindow)
 	return
 	
 	XO:
-	GoToWebsite("https://stockcharts.com/freecharts/pnf.php?c=`%24BTCUSD,PGPADEYRNR[PA][D][F1!3!1.0!!0!20]", openInNewWindow)
-	return
+	site = https://stockcharts.com/freecharts/pnf.php?c=`%24BTCUSD,PGPADEYRNR[PA][D][F1!3!1.0!!0!20]
+	title = BTC Point & Figure Chart
+	try
+	{
+		CreateActiveXGUI(site, 1100, 800, title)
+		return
+		
+	}
+	catch
+	{
+		GoToWebsite(site, openInNewWindow)
+		return
+	}
 	
 	Calendar:
 	GoToWebsite("https://calendar.google.com", openInNewWindow)
@@ -804,12 +834,25 @@ if (AllImagesDownloaded) {
 	return
 	
 	TF:
-	GoToWebsite("https://truflation.com", openInNewWindow)
+	site = https://truflation.com
+	title = Truflation
+	GoToWebsite(site, openInNewWindow)
 	return
 	
 	ECAL:
-	GoToWebsite("https://www.marketwatch.com/economy-politics/calendar", openInNewWindow)
-	return
+	site = https://www.marketwatch.com/economy-politics/calendar
+	title = Economic Calendar
+	try
+	{
+		CreateActiveXGUI(site, 800, 600, title)
+		return
+		
+	}
+	catch
+	{
+		GoToWebsite(site, openInNewWindow)
+		return
+	}
 	
 	SR:
 	; find python install dir hopefully...
@@ -921,6 +964,7 @@ if (AllImagesDownloaded) {
 	URLSearchQuery := URLEncode(FinalSearchQuery)
 	; Create the full DuckDuckGo search URL
 	DuckDuckGoURL := "https://duckduckgo.com/?q=" . URLSearchQuery
+	site = DuckDuckGoURL
 	; Navigate to the DuckDuckGo search URL
 	Run chrome.exe %DuckDuckGoURL% " --new-window "
 	; URLEncode function to percent-encode a string for URL use
@@ -1285,6 +1329,13 @@ if (AllImagesDownloaded) {
 	reload
 	Return
 	
+	Futures:
+	site = https://www.barchart.com/futures
+	title = Market Futures
+	GoToWebsite(site, openInNewWindow)
+	return
+	
+	
 	ButtonGo:
 	Gui,Submit,NoHide
 	If Acct = Charles Schwab
@@ -1469,6 +1520,29 @@ if (AllImagesDownloaded) {
 			}
 		}
 	}
+	
+	GuiAXClose:
+	Gui, wb:Destroy  ; Destroy the GUI to free up resources
+	ExitApp
+	
+	; Function to create an ActiveX GUI
+	CreateActiveXGUI(url, width, height, title)
+	{
+    ; Create GUI
+		Gui, wb:New  ; Create a new GUI
+		Gui, wb:Add, ActiveX, w%width% h%height% vWBaX, Shell.Explorer
+    ; Suppress script errors
+		WBaX.Silent := true
+    ; Navigate to the website
+		WBaX.Navigate(url)
+    ; Wait for the page to load
+		while WBaX.readyState != 4
+			Sleep, 100
+    ; Show GUI
+		Gui, wb:Show, w%width% h%height%, %title%
+		return
+	}
+	
 	
 	return
 }
