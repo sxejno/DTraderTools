@@ -62,7 +62,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.25
+CV = 3.26
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -72,6 +72,8 @@ LE = Last updated: %lastupdateddate%
 last_changes =
 	(
 	Here's what's new in version %CV%:
+	
+	* fixed bug
 	
 	* see enhanced "help" menu by clicking ⓘ
 	
@@ -1448,10 +1450,6 @@ if (AllImagesDownloaded) {
 		scrapeScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/scrape.ahk" 
 		DownloadImageScriptPath := ResourcesFolder . "\DownloadImage.ahk"
 		DownloadImageScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/DownloadImage.ahk" 
-		
-		; deletes existing scrape.ahk to update.... for temporary use to help with automatically updating
-		If FileExist(scrapeScriptPath)
-			FileDelete, % scrapeScriptPath
 		
 		If !FileExist(scrapeScriptPath)
 			UrlDownloadToFile, % scrapeScriptURL, % scrapeScriptPath
