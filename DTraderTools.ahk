@@ -62,7 +62,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.26
+CV = 3.27
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -73,23 +73,10 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* fixed bug
+	* updated icon for Obsidian
 	
-	* see enhanced "help" menu by clicking ⓘ
-	
-	* resized icons for better space efficiency
-	
-	* added futures (updates to this on roadmap)
-	
-	* Econ Calendar and BTC P&F chart now open in GUI
-	
-	* custom 6-buttons now opens to right of main GUI
-	
-	* added config file editor, reached via new help menu
-	
-	* program should now launch in center of primary screen
-	
-	* launch position can be adjusted with config/config editor
+	* fixed bug with image redownloader
+
 	)
 
 
@@ -252,8 +239,8 @@ try {
 	
 	; Add buttons above the help button
 	Gui, Add, Picture,gCalendar x22 y436 w40 h40 BackgroundTrans, %imgcal%
-	Gui, Add, Picture,gOB x82 y432 w31 h49 BackgroundTrans, %imgOB%
-	Gui, Add, Picture,gCalc x131 y436 w40 h40 BackgroundTrans, %imgcalc%
+	Gui, Add, Picture,gOB x82 y432 w40 h40 BackgroundTrans, %imgOB%
+	Gui, Add, Picture,gCalc x132 y436 w40 h40 BackgroundTrans, %imgcalc%
 	Gui, Add, Picture,gFutures x191 y426 w64 h64 BackgroundTrans, %imgFUTURES%
 	
 	
@@ -1457,13 +1444,13 @@ if (AllImagesDownloaded) {
 		
 		If !FileExist(DownloadImageScriptPath)
 			UrlDownloadToFile, % DownloadImageScriptURL, % DownloadImageScriptPath
-		
+		Run % DownloadImageScriptPath
 		Loop, Files, %ImageFolder%\*.*
 		{
 			FileDelete, % A_LoopFileFullPath
 		}
 		CheckAndDownloadImages(ImageList, imageFolder)
-		sleep 2000
+		Sleep 2000
 		reload
 	}
 	
