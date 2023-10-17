@@ -62,7 +62,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.27
+CV = 3.28
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -75,8 +75,7 @@ last_changes =
 	
 	* updated icon for Obsidian
 	
-	* fixed bug with image redownloader
-
+	* fixed bug with resource reloader
 	)
 
 
@@ -1438,19 +1437,23 @@ if (AllImagesDownloaded) {
 		DownloadImageScriptPath := ResourcesFolder . "\DownloadImage.ahk"
 		DownloadImageScriptURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/DownloadImage.ahk" 
 		
+		FileDelete, % scrapeScriptPath
 		If !FileExist(scrapeScriptPath)
 			UrlDownloadToFile, % scrapeScriptURL, % scrapeScriptPath
 		Run % scrapeScriptPath
 		
+		FileDelete, % DownloadImageScriptPath
 		If !FileExist(DownloadImageScriptPath)
 			UrlDownloadToFile, % DownloadImageScriptURL, % DownloadImageScriptPath
 		Run % DownloadImageScriptPath
+		
 		Loop, Files, %ImageFolder%\*.*
 		{
 			FileDelete, % A_LoopFileFullPath
 		}
+		Sleep 1000
 		CheckAndDownloadImages(ImageList, imageFolder)
-		Sleep 2000
+		Sleep 3500
 		reload
 	}
 	
