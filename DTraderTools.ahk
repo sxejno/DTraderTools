@@ -62,7 +62,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.28
+CV = 3.29
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -73,9 +73,8 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* updated icon for Obsidian
+	* added Bitcoin ETFs
 	
-	* fixed bug with resource reloader
 	)
 
 
@@ -221,6 +220,7 @@ try {
 	Gui, Add, Picture, gCD x162 y239 w100 h20 BackgroundTrans, %imgCD%
 	Gui, Add, Picture, gCNN x162 y269 w100 h30 BackgroundTrans, %imgCNN%
 	Gui, Add, Picture, gGF x162 y309 w100 h30 BackgroundTrans, %imgGF%
+	Gui, Add, Button, x162 y347 w100 h20 , Bitcoin ETFs
 	Gui, Add, Picture, gSR x272 y233 w100 h20 BackgroundTrans, %imgSR%
 	Gui, Add, Picture, gGP x272 y259 w100 h20 BackgroundTrans, %imgGP%
 	Gui, Add, Picture, gBTV x272 y289 w140 h50 BackgroundTrans, %imgBTV%
@@ -819,6 +819,22 @@ if (AllImagesDownloaded) {
 	
 	ButtonOPECWatch:
 	GoToWebsite("https://www.cmegroup.com/trading/energy/cme-opec-watch-tool.html", openInNewWindow)
+	return
+	
+	ButtonBitcoinETFs:
+	scriptName := "btc_etfs_gui.ahk"  ; Replace with your script's name
+	scriptPath := A_MyDocuments . "\DTraderTools\resources\" . scriptName
+	downloadURL := "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/btc_etfs_gui.ahk"  ; Replace with the actual URL
+	
+	; Check if the script exists
+	IfNotExist, %scriptPath%
+	{
+		MsgBox, % "Script not found. Downloading from: " . downloadURL
+		URLDownloadToFile, %downloadURL%, %scriptPath%
+	}
+	
+	; Run the script
+	Run, % scriptPath
 	return
 	
 	TF:
