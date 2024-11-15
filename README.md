@@ -28,7 +28,7 @@ The script includes buttons to access the following websites and tools:
 * Dan Niles
 * Fox Business video stream
 * thinkorswim trading platform
-* Coinbase Pro
+* Kraken Desktop
 * r/bitcoinmarkets Daily Discussion thread
 * BTC long/short ratio
 * BTC price updates in the GUI
