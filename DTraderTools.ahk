@@ -27,6 +27,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 ,{"Name": "fbn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/fbn.png"}
 ,{"Name": "ToS", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/ToS.png"}
 ,{"Name": "Coinbase-logo-square-1", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/Coinbase-logo-square-1.png"}
+,{"Name": "kd", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/kd.png"}
 ,{"Name": "CoinDesk", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/CoinDesk.png"}
 ,{"Name": "cnn", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/cnn.png"}
 ,{"Name": "gf", "URL": "https://raw.githubusercontent.com/sxejno/DTraderTools/main/resources/images/gf.png"}
@@ -62,7 +63,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.29
+CV = 3.30
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -73,7 +74,7 @@ last_changes =
 	(
 	Here's what's new in version %CV%:
 	
-	* added Bitcoin ETFs
+	* replaced Coinbase with Kraken Desktop
 	
 	)
 
@@ -148,6 +149,7 @@ imgMaria:= A_MyDocuments . "\DTraderTools\resources\images\maria.png"
 imgFBN:= A_MyDocuments . "\DTraderTools\resources\images\fbn.png"
 imgTOS:= A_MyDocuments . "\DTraderTools\resources\images\ToS.png"
 imgCB:= A_MyDocuments . "\DTraderTools\resources\images\Coinbase-logo-square-1.png"
+imgKD:= A_MyDocuments . "\DTraderTools\resources\images\kd.png"
 imgCD:= A_MyDocuments . "\DTraderTools\resources\images\CoinDesk.png"
 imgCNN:= A_MyDocuments . "\DTraderTools\resources\images\cnn.png"
 imgGF:= A_MyDocuments . "\DTraderTools\resources\images\gf.png"
@@ -215,7 +217,7 @@ try {
 	Gui, Add, DropDownList, x112 y379 w130 h200 vAcct Choose1, %accounts%
 	Gui, Add, Picture, gFBN x42 y239 w100 h100 BackgroundTrans vPicFox, %imgFBN%
 	Gui, Add, Picture, gToS x22 y169 w50 h40 BackgroundTrans, %imgTOS%
-	Gui, Add, Picture, gCB x82 y164 w50 h50 BackgroundTrans, %imgCB%
+	Gui, Add, Picture, gKD x82 y164 w50 h50 BackgroundTrans, %imgKD%
 	Gui, Add, Picture, gBTCDaily x142 y164 w50 h50 BackgroundTrans, %imgBTCD%
 	Gui, Add, Picture, gCD x162 y239 w100 h20 BackgroundTrans, %imgCD%
 	Gui, Add, Picture, gCNN x162 y269 w100 h30 BackgroundTrans, %imgCNN%
@@ -717,6 +719,39 @@ if (AllImagesDownloaded) {
 		else
 		{
 			MsgBox, Thinkorswim not found at either %TosPathLocalAppData% or %TosPathProgramFiles%. Please check the installation.
+		}
+	}
+	return
+	
+	KD:
+	If WinExist("Kraken")
+		WinActivate
+	else If WinExist("Main@KrakenDesktop")
+	{
+		SetTitleMatchMode, 2
+		If WinExist("Kraken")
+		{
+			WinActivate
+		}
+	}
+	else
+	{
+		KDPathLocalAppData := A_LocalAppData "\Kraken Desktop\KrakenDesktop.exe"
+		KDPathProgramFiles := "C:\Program Files\Kraken Desktop\KrakenDesktop.exe"
+		
+		IfExist, %KDPathLocalAppData%
+		{
+			Run %KDPathLocalAppData%
+			WinWait, Kraken
+		}
+		else IfExist, %KDPathProgramFiles%
+		{
+			Run %KDPathProgramFiles%
+			WinWait, Kraken
+		}
+		else
+		{
+			MsgBox, Kraken Desktop not found at either %KDPathLocalAppData% or %KDPathProgramFiles%. Please check the installation.
 		}
 	}
 	return
