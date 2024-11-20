@@ -63,7 +63,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.30
+CV = 3.31
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -75,6 +75,8 @@ last_changes =
 	Here's what's new in version %CV%:
 	
 	* replaced Coinbase with Kraken Desktop
+	
+	* changed how BitcoinMarkets Daily Discussion thread is found
 	
 	)
 
@@ -992,40 +994,62 @@ if (AllImagesDownloaded) {
 	}
 	return
 	
-	BTCDaily:
+	/*
+		BTCDaily:
 	; Get the current date and day of the week
-	FormatTime, CurrentDate,, dddd, MMMM d, yyyy
+		FormatTime, CurrentDate,, dddd, MMMM d, yyyy
 	; Define your basic search query
-	BasicSearchQuery := "! site:https://www.reddit.com/r/BitcoinMarkets/ Daily Discussion"
+		BasicSearchQuery := "! site:https://www.reddit.com/r/BitcoinMarkets/ Daily Discussion"
 	; Append the date to the search query
-	FinalSearchQuery := BasicSearchQuery . " " . CurrentDate
+		FinalSearchQuery := BasicSearchQuery . " " . CurrentDate
 	; Encode the search query for use in a URL
-	URLSearchQuery := URLEncode(FinalSearchQuery)
+		URLSearchQuery := URLEncode(FinalSearchQuery)
 	; Create the full DuckDuckGo search URL
-	DuckDuckGoURL := "https://duckduckgo.com/?q=" . URLSearchQuery
-	site = DuckDuckGoURL
+		DuckDuckGoURL := "https://duckduckgo.com/?q=" . URLSearchQuery
+		site = DuckDuckGoURL
 	; Navigate to the DuckDuckGo search URL
-	Run chrome.exe %DuckDuckGoURL% " --new-window "
+		Run chrome.exe %DuckDuckGoURL% " --new-window "
 	; URLEncode function to percent-encode a string for URL use
-	URLEncode(s)
-	{
-		o := ""
-		Loop, Parse, s
+		URLEncode(s)
 		{
-			i := Asc(A_LoopField)
-			if (i >= 0x30 and i <= 0x39) ; 0-9
+			o := ""
+			Loop, Parse, s
+			{
+				i := Asc(A_LoopField)
+				if (i >= 0x30 and i <= 0x39) ; 0-9
             || (i >= 0x41 and i <= 0x5A) ; A-Z
             || (i >= 0x61 and i <= 0x7A) ; a-z
             || i = 0x2D ; -
             || i = 0x2E ; .
             || i = 0x5F ; _
             || i = 0x7E ; ~
-				o .= A_LoopField
-			Else
-				o .= "%" . Format("{:02X}", i)
+					o .= A_LoopField
+				Else
+					o .= "%" . Format("{:02X}", i)
+			}
+			return o
 		}
-		return o
-	}
+		return
+	*/
+	
+	BTCDaily:
+	; Variables
+	subreddit := "BitcoinMarkets" ; Replace with the actual subreddit name
+	baseURL := "https://www.reddit.com/r/" . subreddit
+	FormatTime, currentDate,, MMMM d, yyyy ; Format: "November 19, 2024"
+	FormatTime, dayOfWeek,, dddd ; Get the current day of the week
+	; Construct the daily thread title
+	threadTitlePattern := "[Daily Discussion] - " . dayOfWeek . ", " . currentDate
+	; Open the subreddit in the default web browser
+	Run, %baseURL%
+	Sleep, 3000 ; Wait for the page to load, adjust this time as needed
+	; Simulate Ctrl+F to search for the thread title pattern
+	Send, ^f
+	Sleep, 500
+	Send, %threadTitlePattern%{Enter}
+	Sleep, 1000 ; Allow some time for navigation
+	; Simulate pressing 'Enter' to click the link (if the link is selected in the search result)
+	Send, {Enter}
 	return
 	
 	OB:
