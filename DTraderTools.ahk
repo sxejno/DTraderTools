@@ -670,6 +670,58 @@ if (AllImagesDownloaded) {
 		return
 	}
 	
+	; Function to find and launch an external program
+	LaunchExternalProgram(WindowTitle, PathLocalAppData, PathProgramFiles) {
+		If WinExist(WindowTitle) {
+			WinActivate
+		} else {
+			FoundPath := ""
+			If FileExist(PathLocalAppData) {
+				FoundPath := PathLocalAppData
+			} else if FileExist(PathProgramFiles) {
+				FoundPath := PathProgramFiles
+			}
+			
+			if (FoundPath != "") {
+				Try Run, %FoundPath%
+				Catch e {
+					MsgBox, 16, Error, Could not launch program from %FoundPath%.`nError: %e%
+					Return false ; Indicate failure
+				}
+            ; Optional: Add a WinWait for the window title here if needed
+            ; WinWait, %WindowTitle%,, 5 ; Wait up to 5 seconds
+            ; if ErrorLevel {
+            ;     MsgBox, 48, Warning, Program launched, but window "%WindowTitle%" did not appear quickly.
+            ; } else {
+            ;     WinActivate
+            ; }
+				Return true ; Indicate success
+			} else {
+				MsgBox, 48, Not Found, Program not found at expected locations:`n%PathLocalAppData%`n%PathProgramFiles%
+				Return false ; Indicate failure
+			}
+		}
+		Return true ; Already running, indicate success
+	}
+	
+	; --- Button Handlers ---
+	ToS:
+	TosLocalAppData := A_LocalAppData "\thinkorswim\thinkorswim.exe"
+	TosProgramFiles := "C:\Program Files\thinkorswim\thinkorswim.exe"
+	LaunchExternalProgram("ahk_exe thinkorswim.exe", TosLocalAppData, TosProgramFiles) ; Use ahk_exe for more robust window matching if title changes
+	Return
+	
+	KD:
+	KDLocalAppData := A_LocalAppData "\Kraken Desktop\KrakenDesktop.exe"
+	KDProgramFiles := "C:\Program Files\Kraken Desktop\KrakenDesktop.exe"
+	LaunchExternalProgram("ahk_class KrakenDesktop", KDLocalAppData, KDProgramFiles) ; Use ahk_class if available
+	Return
+	
+	OB:
+	OBLocalAppData := A_LocalAppData "\Obsidian\Obsidian.exe"
+	OBProgramFiles := "C:\Program Files\Obsidian\Obsidian.exe"
+	LaunchExternalProgram("ahk_exe Obsidian.exe", OBLocalAppData, OBProgramFiles)
+	Return
 	
 	FBN:
 	GuiControl, -Redraw, PicFox
@@ -691,72 +743,6 @@ if (AllImagesDownloaded) {
 	;Run chrome.exe %site4% "--new-tab"
 	Run chrome.exe %site5% "--new-tab"
 	return 
-	
-	ToS:
-	If WinExist("Logon to thinkorswim")
-		WinActivate
-	else If WinExist("Main@thinkorswim")
-	{
-		SetTitleMatchMode, 2
-		If WinExist("thinkorswim")
-		{
-			WinActivate
-		}
-	}
-	else
-	{
-		TosPathLocalAppData := A_LocalAppData "\thinkorswim\thinkorswim.exe"
-		TosPathProgramFiles := "C:\Program Files\thinkorswim\thinkorswim.exe"
-		
-		IfExist, %TosPathLocalAppData%
-		{
-			Run %TosPathLocalAppData%
-			WinWait, Logon to thinkorswim
-		}
-		else IfExist, %TosPathProgramFiles%
-		{
-			Run %TosPathProgramFiles%
-			WinWait, Logon to thinkorswim
-		}
-		else
-		{
-			MsgBox, Thinkorswim not found at either %TosPathLocalAppData% or %TosPathProgramFiles%. Please check the installation.
-		}
-	}
-	return
-	
-	KD:
-	If WinExist("Kraken")
-		WinActivate
-	else If WinExist("Main@KrakenDesktop")
-	{
-		SetTitleMatchMode, 2
-		If WinExist("Kraken")
-		{
-			WinActivate
-		}
-	}
-	else
-	{
-		KDPathLocalAppData := A_LocalAppData "\Kraken Desktop\KrakenDesktop.exe"
-		KDPathProgramFiles := "C:\Program Files\Kraken Desktop\KrakenDesktop.exe"
-		
-		IfExist, %KDPathLocalAppData%
-		{
-			Run %KDPathLocalAppData%
-			WinWait, Kraken
-		}
-		else IfExist, %KDPathProgramFiles%
-		{
-			Run %KDPathProgramFiles%
-			WinWait, Kraken
-		}
-		else
-		{
-			MsgBox, Kraken Desktop not found at either %KDPathLocalAppData% or %KDPathProgramFiles%. Please check the installation.
-		}
-	}
-	return
 	
 	CB:
 	GoToWebsite("https://pro.coinbase.com/trade/BTC-USD", openInNewWindow)
@@ -1050,41 +1036,6 @@ if (AllImagesDownloaded) {
 	Sleep, 1000 ; Allow some time for navigation
 	; Simulate pressing 'Enter' to click the link (if the link is selected in the search result)
 	Send, {Enter}
-	return
-	
-	OB:
-	SetTitleMatchMode, 2
-	wintit := "Obsidian v"
-	IfWinExist, %wintit%
-		WinActivate, Obsidian
-	else If WinExist("Obsidian v")
-	{
-		SetTitleMatchMode, 2
-		If WinExist("Obsidian v")
-		{
-			WinActivate
-		}
-	}
-	else
-	{
-		OBPathLocalAppData := A_LocalAppData "\Obsidian\Obsidian.exe"
-		OBPathProgramFiles := "C:\Program Files\Obsidian\Obsidian.exe"
-		
-		IfExist, %OBPathLocalAppData%
-		{
-			Run %OBPathLocalAppData%
-			WinWaitActive
-		}
-		else IfExist, %OBPathProgramFiles%
-		{
-			Run %OBPathProgramFiles%
-			WinWaitActive
-		}
-		else
-		{
-			MsgBox, Obsidian not found at either %OBPathLocalAppData% or %OBPathProgramFiles%. Please check the installation or download Obsidian.
-		}
-	}
 	return
 	
 	; work in progress update to updater that saves a user-specified number of backups	
@@ -1532,6 +1483,7 @@ if (AllImagesDownloaded) {
 		reload
 	}
 	
+	
 	FetchPrice() {
 		global watch
 	; Create the XMLHTTP object and store it in a variable
@@ -1554,7 +1506,7 @@ if (AllImagesDownloaded) {
 			GuiControl,, PriceText, Failed to fetch price
 		}
 	}
-	
+
 	
 	; Timer to refresh the price every 30 seconds (30000 milliseconds)
 	SetTimer, FetchPrice, 30000
