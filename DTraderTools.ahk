@@ -63,7 +63,7 @@ global ImageList := [{"Name": "favicon", "URL": "https://raw.githubusercontent.c
 
 
 
-CV = 3.31
+CV = 3.32
 ; automatically update lastupdateddate based on last modified time
 FileGetTime, TimeString, %A_ScriptFullPath%, M  ; M for last modified time
 FormatTime, TimeString, %TimeString%, MMMM d, yyyy  ; Format the time
@@ -73,8 +73,6 @@ LE = Last updated: %lastupdateddate%
 last_changes =
 	(
 	Here's what's new in version %CV%:
-	
-	* replaced Coinbase with Kraken Desktop
 	
 	* changed how BitcoinMarkets Daily Discussion thread is found
 	
@@ -670,58 +668,6 @@ if (AllImagesDownloaded) {
 		return
 	}
 	
-	; Function to find and launch an external program
-	LaunchExternalProgram(WindowTitle, PathLocalAppData, PathProgramFiles) {
-		If WinExist(WindowTitle) {
-			WinActivate
-		} else {
-			FoundPath := ""
-			If FileExist(PathLocalAppData) {
-				FoundPath := PathLocalAppData
-			} else if FileExist(PathProgramFiles) {
-				FoundPath := PathProgramFiles
-			}
-			
-			if (FoundPath != "") {
-				Try Run, %FoundPath%
-				Catch e {
-					MsgBox, 16, Error, Could not launch program from %FoundPath%.`nError: %e%
-					Return false ; Indicate failure
-				}
-            ; Optional: Add a WinWait for the window title here if needed
-            ; WinWait, %WindowTitle%,, 5 ; Wait up to 5 seconds
-            ; if ErrorLevel {
-            ;     MsgBox, 48, Warning, Program launched, but window "%WindowTitle%" did not appear quickly.
-            ; } else {
-            ;     WinActivate
-            ; }
-				Return true ; Indicate success
-			} else {
-				MsgBox, 48, Not Found, Program not found at expected locations:`n%PathLocalAppData%`n%PathProgramFiles%
-				Return false ; Indicate failure
-			}
-		}
-		Return true ; Already running, indicate success
-	}
-	
-	; --- Button Handlers ---
-	ToS:
-	TosLocalAppData := A_LocalAppData "\thinkorswim\thinkorswim.exe"
-	TosProgramFiles := "C:\Program Files\thinkorswim\thinkorswim.exe"
-	LaunchExternalProgram("ahk_exe thinkorswim.exe", TosLocalAppData, TosProgramFiles) ; Use ahk_exe for more robust window matching if title changes
-	Return
-	
-	KD:
-	KDLocalAppData := A_LocalAppData "\Kraken Desktop\KrakenDesktop.exe"
-	KDProgramFiles := "C:\Program Files\Kraken Desktop\KrakenDesktop.exe"
-	LaunchExternalProgram("ahk_class KrakenDesktop", KDLocalAppData, KDProgramFiles) ; Use ahk_class if available
-	Return
-	
-	OB:
-	OBLocalAppData := A_LocalAppData "\Obsidian\Obsidian.exe"
-	OBProgramFiles := "C:\Program Files\Obsidian\Obsidian.exe"
-	LaunchExternalProgram("ahk_exe Obsidian.exe", OBLocalAppData, OBProgramFiles)
-	Return
 	
 	FBN:
 	GuiControl, -Redraw, PicFox
@@ -743,6 +689,72 @@ if (AllImagesDownloaded) {
 	;Run chrome.exe %site4% "--new-tab"
 	Run chrome.exe %site5% "--new-tab"
 	return 
+	
+	ToS:
+	If WinExist("Logon to thinkorswim")
+		WinActivate
+	else If WinExist("Main@thinkorswim")
+	{
+		SetTitleMatchMode, 2
+		If WinExist("thinkorswim")
+		{
+			WinActivate
+		}
+	}
+	else
+	{
+		TosPathLocalAppData := A_LocalAppData "\thinkorswim\thinkorswim.exe"
+		TosPathProgramFiles := "C:\Program Files\thinkorswim\thinkorswim.exe"
+		
+		IfExist, %TosPathLocalAppData%
+		{
+			Run %TosPathLocalAppData%
+			WinWait, Logon to thinkorswim
+		}
+		else IfExist, %TosPathProgramFiles%
+		{
+			Run %TosPathProgramFiles%
+			WinWait, Logon to thinkorswim
+		}
+		else
+		{
+			MsgBox, Thinkorswim not found at either %TosPathLocalAppData% or %TosPathProgramFiles%. Please check the installation.
+		}
+	}
+	return
+	
+	KD:
+	If WinExist("Kraken")
+		WinActivate
+	else If WinExist("Main@KrakenDesktop")
+	{
+		SetTitleMatchMode, 2
+		If WinExist("Kraken")
+		{
+			WinActivate
+		}
+	}
+	else
+	{
+		KDPathLocalAppData := A_LocalAppData "\Kraken Desktop\KrakenDesktop.exe"
+		KDPathProgramFiles := "C:\Program Files\Kraken Desktop\KrakenDesktop.exe"
+		
+		IfExist, %KDPathLocalAppData%
+		{
+			Run %KDPathLocalAppData%
+			WinWait, Kraken
+		}
+		else IfExist, %KDPathProgramFiles%
+		{
+			Run %KDPathProgramFiles%
+			WinWait, Kraken
+		}
+		else
+		{
+			MsgBox, Kraken Desktop not found at either %KDPathLocalAppData% or %KDPathProgramFiles%. Please check the installation.
+		}
+	}
+	return
 	
 	CB:
 	GoToWebsite("https://pro.coinbase.com/trade/BTC-USD", openInNewWindow)
@@ -980,62 +992,93 @@ if (AllImagesDownloaded) {
 	}
 	return
 	
-	/*
-		BTCDaily:
-	; Get the current date and day of the week
-		FormatTime, CurrentDate,, dddd, MMMM d, yyyy
-	; Define your basic search query
-		BasicSearchQuery := "! site:https://www.reddit.com/r/BitcoinMarkets/ Daily Discussion"
-	; Append the date to the search query
-		FinalSearchQuery := BasicSearchQuery . " " . CurrentDate
-	; Encode the search query for use in a URL
-		URLSearchQuery := URLEncode(FinalSearchQuery)
-	; Create the full DuckDuckGo search URL
-		DuckDuckGoURL := "https://duckduckgo.com/?q=" . URLSearchQuery
-		site = DuckDuckGoURL
-	; Navigate to the DuckDuckGo search URL
-		Run chrome.exe %DuckDuckGoURL% " --new-window "
-	; URLEncode function to percent-encode a string for URL use
-		URLEncode(s)
+	OpenBitcoinMarketsDailyDiscussion()
+	{
+		Url := "https://www.reddit.com/r/BitcoinMarkets/new/"
+		try
 		{
-			o := ""
-			Loop, Parse, s
-			{
-				i := Asc(A_LoopField)
-				if (i >= 0x30 and i <= 0x39) ; 0-9
-            || (i >= 0x41 and i <= 0x5A) ; A-Z
-            || (i >= 0x61 and i <= 0x7A) ; a-z
-            || i = 0x2D ; -
-            || i = 0x2E ; .
-            || i = 0x5F ; _
-            || i = 0x7E ; ~
-					o .= A_LoopField
-				Else
-					o .= "%" . Format("{:02X}", i)
-			}
-			return o
+			Http := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+			Http.Open("GET", Url, false)
+			Http.SetRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+			Http.Send()
+			HtmlContent := Http.ResponseText
 		}
-		return
-	*/
+		catch
+		{
+			MsgBox, 48, Error, Failed to download page.
+			return
+		}
+		
+    ; Try today's date
+		FormatTime, Today,, MMMM d, yyyy
+		Link := FindDiscussionLink(HtmlContent, Today)
+		
+    ; If not found, try yesterday's date
+		if (!Link)
+		{
+			Yesterday := A_Now
+			EnvAdd, Yesterday, -1, Days
+			FormatTime, YesterdayFormatted, %Yesterday%, MMMM d, yyyy
+			Link := FindDiscussionLink(HtmlContent, YesterdayFormatted)
+		}
+		
+		if (Link)
+		{
+			Run, %Link%
+		}
+		else
+		{
+			MsgBox, 48, Error, Could not find today's or yesterday's Daily Discussion thread.
+		}
+	}
+	
+	FindDiscussionLink(Html, DateToSearch)
+	{
+		DateToSearch := RegExReplace(DateToSearch, "\b0", "") ; Remove leading zero from day
+		SearchPattern := "Daily Discussion.*" . DateToSearch
+		if (RegExMatch(Html, "i)(/r/BitcoinMarkets/comments/[a-z0-9]+/daily_discussion[^\""]+)", Match))
+			return "https://www.reddit.com" . Match1
+		else
+			return ""
+	}
 	
 	BTCDaily:
-	; Variables
-	subreddit := "BitcoinMarkets" ; Replace with the actual subreddit name
-	baseURL := "https://www.reddit.com/r/" . subreddit
-	FormatTime, currentDate,, MMMM d, yyyy ; Format: "November 19, 2024"
-	FormatTime, dayOfWeek,, dddd ; Get the current day of the week
-	; Construct the daily thread title
-	threadTitlePattern := "[Daily Discussion] - " . dayOfWeek . ", " . currentDate
-	; Open the subreddit in the default web browser
-	Run, %baseURL%
-	Sleep, 3000 ; Wait for the page to load, adjust this time as needed
-	; Simulate Ctrl+F to search for the thread title pattern
-	Send, ^f
-	Sleep, 500
-	Send, %threadTitlePattern%{Enter}
-	Sleep, 1000 ; Allow some time for navigation
-	; Simulate pressing 'Enter' to click the link (if the link is selected in the search result)
-	Send, {Enter}
+	OpenBitcoinMarketsDailyDiscussion()
+	return
+	
+	OB:
+	SetTitleMatchMode, 2
+	wintit := "Obsidian v"
+	IfWinExist, %wintit%
+		WinActivate, Obsidian
+	else If WinExist("Obsidian v")
+	{
+		SetTitleMatchMode, 2
+		If WinExist("Obsidian v")
+		{
+			WinActivate
+		}
+	}
+	else
+	{
+		OBPathLocalAppData := A_LocalAppData "\Obsidian\Obsidian.exe"
+		OBPathProgramFiles := "C:\Program Files\Obsidian\Obsidian.exe"
+		
+		IfExist, %OBPathLocalAppData%
+		{
+			Run %OBPathLocalAppData%
+			WinWaitActive
+		}
+		else IfExist, %OBPathProgramFiles%
+		{
+			Run %OBPathProgramFiles%
+			WinWaitActive
+		}
+		else
+		{
+			MsgBox, Obsidian not found at either %OBPathLocalAppData% or %OBPathProgramFiles%. Please check the installation or download Obsidian.
+		}
+	}
 	return
 	
 	; work in progress update to updater that saves a user-specified number of backups	
@@ -1483,7 +1526,6 @@ if (AllImagesDownloaded) {
 		reload
 	}
 	
-	
 	FetchPrice() {
 		global watch
 	; Create the XMLHTTP object and store it in a variable
@@ -1506,7 +1548,7 @@ if (AllImagesDownloaded) {
 			GuiControl,, PriceText, Failed to fetch price
 		}
 	}
-
+	
 	
 	; Timer to refresh the price every 30 seconds (30000 milliseconds)
 	SetTimer, FetchPrice, 30000
